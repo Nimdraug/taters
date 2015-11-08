@@ -12,14 +12,18 @@ def a( files ):
 def b( files ):
     for f in files:
         if f.name.endswith( '.txt' ):
-            pipe = StringIO.StringIO()
-            # todo: run in thread to allow concurrency
-            pipe.write( f.read().upper() )
-            pipe.seek( 0 )
-            pipe.name = f.name
-            yield pipe
+            yield uppercase( f )
         else:
             yield f
+
+def uppercase( f ):
+    pipe = StringIO.StringIO()
+    # todo: run in thread to allow concurrency
+    pipe.write( f.read().upper() )
+    pipe.seek( 0 )
+    pipe.name = f.name
+    return pipe
+
 
 def c():
     for f in os.listdir( '.' ):
