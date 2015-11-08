@@ -1,4 +1,4 @@
-
+import os.path
 
 def a( files ):
     for f in files:
@@ -13,7 +13,8 @@ def b( files ):
             yield pipe
 
 def c():
-    for f in os.listdir():
-        yield open( f )
+    for f in os.listdir( '.' ):
+        if os.path.isfile( f ):
+            yield open( f )
 
 a( b( c() ) )
