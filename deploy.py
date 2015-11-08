@@ -8,7 +8,6 @@ def a( files ):
         print f.read()
         print
 
-
 def b( files ):
     for f in files:
         if f.name.endswith( '.txt' ):
@@ -23,7 +22,6 @@ def uppercase( f ):
     pipe.seek( 0 )
     pipe.name = f.name
     return pipe
-
 
 def c():
     for f in os.listdir( '.' ):
