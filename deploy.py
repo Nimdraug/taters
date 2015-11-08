@@ -3,7 +3,11 @@ import StringIO
 
 def a( files ):
     for f in files:
+        print f.name
+        print '-' * len( f.name )
         print f.read()
+        print
+
 
 def b( files ):
     for f in files:
