@@ -11,6 +11,8 @@ def b( files ):
             # todo: run in thread to allow concurrency
             pipe.write( f.read().upper() )
             yield pipe
+        else:
+            yield f
 
 def c():
     for f in os.listdir( '.' ):
