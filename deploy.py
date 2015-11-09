@@ -10,7 +10,9 @@ def debug_dest( files ):
 
 def test_splitter( files ):
     for f in files:
-        if f.name.endswith( '.txt' ):
+        if f.name == __file__:
+            pass
+        elif f.name.endswith( '.txt' ):
             yield uppercase( f )
         else:
             yield f
