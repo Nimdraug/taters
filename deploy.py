@@ -1,5 +1,6 @@
 import os.path
 import StringIO
+import sh
 
 def debug_dest( files ):
     for f in files:
@@ -14,6 +15,8 @@ def test_splitter( files ):
             pass
         elif f.name.endswith( '.txt' ):
             yield uppercase( f )
+        elif f.name.endswith( '.less' ):
+            yield lessc( f, f.name.replace( '.less', '.css' ) )
         else:
             yield f
 
@@ -23,6 +26,13 @@ def uppercase( f ):
     pipe.write( f.read().upper() )
     pipe.seek( 0 )
     pipe.name = f.name
+    return pipe
+
+def lessc( f, d ):
+    pipe = StringIO.StringIO()
+    pipe.name = d
+    sh.lessc( '-', _in = f, _out = pipe )
+    pipe.seek( 0 )
     return pipe
 
 def dirlist_source():
