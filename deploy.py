@@ -9,6 +9,20 @@ def debug_dest( files ):
         print f.read()
         print
 
+class ftp_dest( object ):
+    def __init__( self, url, files ):
+        self.url = url
+        self.con = None
+
+        for f in files:
+            if not self.con:
+                self.connect()
+
+            if f.delete:
+                self.rm( f )
+            else:
+                self.put( f )
+
 def test_splitter( files ):
     for f in files:
         if f.name == __file__:
