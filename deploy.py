@@ -1,6 +1,8 @@
 import os.path
 import StringIO
 import sh
+import targets
+import sys
 
 def debug_dest( files ):
     for f in files:
@@ -35,6 +37,12 @@ def test_splitter( files ):
         else:
             yield f
 
+def dest_select( files ):
+    if len( sys.argv ) > 1:
+        return getattr( targets, sys.argv[1] )( files )
+    else:
+        return targets.default( files )
+
 def uppercase( f ):
     pipe = StringIO.StringIO()
     # todo: run in thread to allow concurrency
@@ -55,4 +63,5 @@ def dirlist_source():
         if os.path.isfile( f ):
             yield open( f )
 
-debug_dest( test_splitter( dirlist_source() ) )
+if __name__ == '__main__':
+    dest_select( test_splitter( dirlist_source() ) )
