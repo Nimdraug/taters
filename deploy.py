@@ -28,7 +28,7 @@ class ftp_dest( object ):
 
 def test_splitter( files ):
     for f in files:
-        if f.name == __file__:
+        if f.name in [ __file__, 'targets.py' ] or f.name.endswith( '.pyc' ):
             pass
         elif f.name.endswith( '.txt' ):
             yield uppercase( f )
