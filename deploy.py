@@ -10,10 +10,11 @@ def debug_dest( files ):
         print
 
 class ftp_dest( object ):
-    def __init__( self, url, files ):
+    def __init__( self, url ):
         self.url = url
         self.con = None
 
+    def __call__( files ):
         for f in files:
             if not self.con:
                 self.connect()
