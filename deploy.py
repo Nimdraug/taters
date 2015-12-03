@@ -99,5 +99,29 @@ def dirlist_source():
         if os.path.isfile( f ):
             yield open( f )
 
+def git_source( from_sha1 = None, to_sha1 = None ):
+    if from_sha1 is not None:
+        if to_sha1 is not None:
+            files = sh.git.diff( '--name-status', '--no-renames', '--color=never', from_sha1, to_sha1, _iter = True, _tty_out = False )
+        else:
+            files = sh.git.diff( '--name-status', '--no-renames', '--color=never', from_sha1, _iter = True, _tty_out = False )
+
+        all_files = False
+    else:
+        files = sh.git( "ls-files", _iter = True, _tty_out = False )
+        all_files = True
+
+    for l in files:
+        if not all_files:
+            mode, fname = l.strip().split( '\t' )
+        else:
+            mode = 'A'
+            fname = l.strip()
+
+        f = lazy_file( fname )
+        f.mode = mode
+
+        yield f
+
 if __name__ == '__main__':
     dest_select( test_splitter( dirlist_source() ) )
