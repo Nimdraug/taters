@@ -123,5 +123,8 @@ def git_source( from_sha1 = None, to_sha1 = None ):
 
         yield f
 
+def get_cur_sha1():
+    return str( sh.git.log( n = 1, pretty = "format:%H", _tty_out = False ) )
+
 if __name__ == '__main__':
     dest_select( test_splitter( dirlist_source() ) )
