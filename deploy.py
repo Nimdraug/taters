@@ -11,6 +11,40 @@ def debug_dest( files ):
         print f.read()
         print
 
+class lazy_file( object ):
+    def __init__( self, fname, *a, **kw ):
+        self.fname = fname
+        self.file = None
+        self.a = a
+        self.kw = kw
+
+    def open( self ):
+        self.file = open( self.fname, *self.a, **self.kw )
+
+    def read( self, *a, **kw ):
+        if not self.file:
+            self.open()
+
+        return self.file.read( *a, **kw )
+
+    def write( self, *a, **kw ):
+        if not self.file:
+            self.open()
+
+        return self.file.write( *a, **kw )
+
+    def seek( self, *a, **kw ):
+        if not self.file:
+            self.open()
+
+        return self.file.seek( *a, **kw )
+
+    def tell( self, *a, **kw ):
+        if not self.file:
+            self.open()
+
+        return self.file.tell( *a, **kw )
+
 class ftp_dest( object ):
     def __init__( self, url ):
         self.url = url
