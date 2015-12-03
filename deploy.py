@@ -7,6 +7,8 @@ import sys
 def debug_dest( files ):
     for f in files:
         print f.name
+        if hasattr( f, 'mode' ):
+            print 'Mode: ', f.mode
         print '-' * len( f.name )
         print f.read()
         print
