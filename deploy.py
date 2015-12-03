@@ -106,12 +106,12 @@ class git_source( object ):
     def get_head_commit():
         return str( sh.git.log( n = 1, pretty = "format:%H", _tty_out = False ) )
 
-    def __call__( self, from_sha1 = None, to_sha1 = None ):
-        if from_sha1 is not None:
-            if to_sha1 is not None:
-                files = sh.git.diff( '--name-status', '--no-renames', '--color=never', from_sha1, to_sha1, _iter = True, _tty_out = False )
+    def __call__( self, from_commit = None, to_commit = None ):
+        if from_commit is not None:
+            if to_commit is not None:
+                files = sh.git.diff( '--name-status', '--no-renames', '--color=never', from_commit, to_commit, _iter = True, _tty_out = False )
             else:
-                files = sh.git.diff( '--name-status', '--no-renames', '--color=never', from_sha1, _iter = True, _tty_out = False )
+                files = sh.git.diff( '--name-status', '--no-renames', '--color=never', from_commit, _iter = True, _tty_out = False )
 
             all_files = False
         else:
