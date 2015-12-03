@@ -12,14 +12,14 @@ def debug_dest( files ):
         print
 
 class lazy_file( object ):
-    def __init__( self, fname, *a, **kw ):
-        self.fname = fname
+    def __init__( self, name, *a, **kw ):
+        self.name = name
         self.file = None
         self.a = a
         self.kw = kw
 
     def open( self ):
-        self.file = open( self.fname, *self.a, **self.kw )
+        self.file = open( self.name, *self.a, **self.kw )
 
     def read( self, *a, **kw ):
         if not self.file:
