@@ -47,6 +47,23 @@ class lazy_file( object ):
 
         return self.file.tell( *a, **kw )
 
+class queue_file( object ):
+    def __init__( self, name, *a, **kw ):
+        self.name = name
+        self.q = []
+        self.pos = 0
+
+    def write( self, data ):
+        self.q.append( data )
+        self.pos += len( data )
+
+    def read( self ):
+        if len( self.q ):
+            return self.q.pop( 0 )
+
+    def tell( self ):
+        return self.pos
+
 class ftp_dest( object ):
     def __init__( self, url ):
         self.url = url
