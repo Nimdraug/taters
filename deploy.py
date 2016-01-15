@@ -120,8 +120,8 @@ class git_source( object ):
     def __init__( self, path = '.' ):
         self.path = path
 
-    def get_head_commit( self ):
-        return str( sh.git.log( n = 1, pretty = "format:%H", _tty_out = False ) )
+    def get_ref_commit( self, ref = 'HEAD' ):
+        return str( sh.git( 'rev-parse', ref ) )
 
     def __call__( self, from_commit = None, to_commit = None ):
         if from_commit is not None:
