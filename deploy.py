@@ -123,9 +123,17 @@ def lessc( f, d ):
     return pipe
 
 def dirlist_source():
-    for f in os.listdir( '.' ):
-        if os.path.isfile( f ):
-            yield open( f )
+    def _rec_dir_src( path ):
+        for fpath in os.listdir( path ):
+            fpath = os.path.relpath( os.path.join( path, fpath ) )
+            if os.path.isfile( fpath ):
+                yield open( fpath )
+            elif os.path.isdir( fpath ):
+                print 'dir', fpath
+                for f in _rec_dir_src( fpath ):
+                    yield f
+
+    return _rec_dir_src( '.' )
 
 class git_source( object ):
     def __init__( self, path = '.' ):
