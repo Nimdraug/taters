@@ -1,7 +1,6 @@
 import os.path
 import StringIO
 import sh
-import targets
 import sys
 
 def debug_dest( files ):
@@ -90,7 +89,7 @@ def test_splitter( files ):
         else:
             yield f
 
-def dest_select( files ):
+def dest_select( files, targets ):
     if len( sys.argv ) > 1:
         return getattr( targets, sys.argv[1] )( files )
     else:
