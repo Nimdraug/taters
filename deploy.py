@@ -12,6 +12,10 @@ def debug_dest( files ):
         print f.read()
         print
 
+def local_dest( path, files ):
+    for f in files:
+        open( os.path.join( path, f ), 'wb' ).write( f.read() )
+
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
         self.name = name
