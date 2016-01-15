@@ -20,6 +20,11 @@ class local_dest( object ):
         for f in files:
             dfn = os.path.join( self.path, f.name )
 
+            # Ensure dest paths exist
+            dpath = os.path.dirname( dfn )
+            if not os.path.exists( dpath ):
+                os.makedirs( dpath )
+
             print 'Deploying %s as %s...' % ( f.name, dfn ),
             open( dfn, 'wb' ).write( f.read() )
             print 'Done'
