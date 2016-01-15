@@ -12,9 +12,13 @@ def debug_dest( files ):
         print f.read()
         print
 
-def local_dest( path, files ):
-    for f in files:
-        open( os.path.join( path, f ), 'wb' ).write( f.read() )
+class local_dest( object ):
+    def __init__( self, path ):
+        self.path = path
+
+    def __call__( self, files ):
+        for f in files:
+            open( os.path.join( self.path, f ), 'wb' ).write( f.read() )
 
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
