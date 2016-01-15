@@ -18,7 +18,11 @@ class local_dest( object ):
 
     def __call__( self, files ):
         for f in files:
-            open( os.path.join( self.path, f ), 'wb' ).write( f.read() )
+            dfn = os.path.join( self.path, f.name )
+
+            print 'Deploying %s as %s...' % ( f.name, dfn ),
+            open( dfn, 'wb' ).write( f.read() )
+            print 'Done'
 
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
