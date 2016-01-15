@@ -145,6 +145,3 @@ class git_source( object ):
             f.mode = mode
 
             yield f
-
-if __name__ == '__main__':
-    dest_select( test_splitter( dirlist_source() ) )
