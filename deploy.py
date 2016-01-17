@@ -127,18 +127,19 @@ def lessc( f, d ):
     pipe.seek( 0 )
     return pipe
 
-def dirlist_source():
-    def _rec_dir_src( path ):
-        for fpath in os.listdir( path ):
-            fpath = os.path.relpath( os.path.join( path, fpath ) )
+class dirlist_source( object ):
+    def __init__( self, path = '.', recursive = True ):
+        self.path = path
+        self.recursive = recursive
+
+    def __call__( self ):
+        for fpath in os.listdir( self.path ):
+            fpath = os.path.relpath( os.path.join( self.path, fpath ) )
             if os.path.isfile( fpath ):
                 yield lazy_file( fpath )
-            elif os.path.isdir( fpath ):
-                print 'dir', fpath
-                for f in _rec_dir_src( fpath ):
+            elif os.path.isdir( fpath ) and self.recursive:
+                for f in dirlist_source( fpath, True )():
                     yield f
-
-    return _rec_dir_src( '.' )
 
 class git_source( object ):
     def __init__( self, path = '.' ):
