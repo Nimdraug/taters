@@ -132,7 +132,7 @@ def dirlist_source():
         for fpath in os.listdir( path ):
             fpath = os.path.relpath( os.path.join( path, fpath ) )
             if os.path.isfile( fpath ):
-                yield open( fpath )
+                yield lazy_file( fpath )
             elif os.path.isdir( fpath ):
                 print 'dir', fpath
                 for f in _rec_dir_src( fpath ):
