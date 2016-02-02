@@ -2,6 +2,7 @@ import os.path
 import StringIO
 import sh
 import sys
+import urlparse
 
 def debug_dest( files ):
     for f in files:
@@ -94,6 +95,22 @@ class ftp_dest( object ):
                 self.rm( f )
             else:
                 self.put( f )
+
+class ssh_dest( object ):
+    def __init__( self, url ):
+        if isinstance( url, basestring ):
+            url = urlparse.urlparse( url )
+
+        self.url = url
+
+    def __call__( self, files ):
+        for f in files:
+            sh.ssh( '%s:%s' & ( self.url.hostname, dpath ), 'mkdir', '-p', dirname( f.name ) )
+
+            print 'Deploying %s...' % ( f.name ),
+            sh.ssh( '%s:%s' & ( self.url.hostname, dpath ), 'tee', f.name )
+            print 'Done'
+
 
 def test_splitter( files ):
     for f in files:
