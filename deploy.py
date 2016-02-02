@@ -105,10 +105,12 @@ class ssh_dest( object ):
 
     def __call__( self, files ):
         for f in files:
-            sh.ssh( '%s:%s' & ( self.url.hostname, dpath ), 'mkdir', '-p', dirname( f.name ) )
+            path = os.path.join( self.url.path, os.path.dirname( f.name ) )
+            if os.path.dirname( f.name ):
+                sh.ssh( '%s' % ( self.url.hostname ), 'mkdir', '-p', path )
 
             print 'Deploying %s...' % ( f.name ),
-            sh.ssh( '%s:%s' & ( self.url.hostname, dpath ), 'tee', f.name )
+            sh.scp( f.name, '%s:%s' % ( self.url.hostname, os.path.join( self.url.path, f.name ) ) )
             print 'Done'
 
 
