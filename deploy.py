@@ -126,9 +126,11 @@ class ssh_dest( object ):
                 sftp.mkdir( path )
 
             print 'Deploying %s...' % ( f.name ),
-            sftp.putfo( f, f.name )
+            sftp.putfo( f, f.name, callback = self.report_progress )
             print 'Done'
 
+    def report_progress( self, a, b ):
+        print a, b
 
 def test_splitter( files ):
     for f in files:
