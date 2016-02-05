@@ -111,6 +111,7 @@ class ssh_dest( object ):
         self.url = url
 
     def __call__( self, files ):
+        print 'Connecting to', self.url.hostname
         con = paramiko.SSHClient()
         con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
         con.connect( self.url.hostname, port = self.url.port )
