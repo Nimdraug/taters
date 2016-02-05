@@ -13,6 +13,12 @@ def debug_dest( files ):
         print f.read()
         print
 
+def debug_pipe( files ):
+    for f in files:
+        print f.name
+
+        yield f
+
 class local_dest( object ):
     def __init__( self, path ):
         self.path = path
