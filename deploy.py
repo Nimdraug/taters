@@ -3,6 +3,7 @@ import StringIO
 import sh
 import sys
 import urlparse
+import paramiko
 
 def debug_dest( files ):
     for f in files:
@@ -110,13 +111,22 @@ class ssh_dest( object ):
         self.url = url
 
     def __call__( self, files ):
+        con = paramiko.SSHClient()
+        con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
+        con.connect( self.url.hostname, port = self.url.port )
+        sftp = con.open_sftp()
+        sftp.chdir( self.url.path )
+
         for f in files:
-            path = os.path.join( self.url.path, os.path.dirname( f.name ) )
-            if os.path.dirname( f.name ):
-                sh.ssh( '%s' % ( self.url.hostname ), 'mkdir', '-p', path )
+            path = os.path.dirname( f.name )
+            
+            try:
+                sftp.stat( path )
+            except IOError:
+                sftp.mkdir( path )
 
             print 'Deploying %s...' % ( f.name ),
-            sh.scp( f.name, '%s:%s' % ( self.url.hostname, os.path.join( self.url.path, f.name ) ) )
+            sftp.putfo( f, f.name )
             print 'Done'
 
 
