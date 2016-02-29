@@ -33,9 +33,14 @@ class local_dest( object ):
             if not os.path.exists( dpath ):
                 os.makedirs( dpath )
 
-            print 'Deploying %s as %s...' % ( f.name, dfn ),
-            open( dfn, 'wb' ).write( f.read() )
-            print 'Done'
+            if f.mode != 'D':
+                print 'Deploying %s as %s...' % ( f.name, dfn ),
+                open( dfn, 'wb' ).write( f.read() )
+                print 'Done'
+            else:
+                print 'Removing %s...' % ( dfn ),
+                os.remove( dfn )
+                print 'Done'
 
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
