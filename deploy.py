@@ -130,19 +130,19 @@ class ftp_dest( object ):
 
         self.con.storbinary( 'STOR %s' % os.path.basename( f.name ), f )
 
-    def rm( self, fpath ):
+    def rm( self, f ):
         try:
-            self.con.cwd( os.path.dirname( fpath ) )
+            self.con.cwd( os.path.dirname( f.name ) )
         except Exception, e:
-            print 'FTP-ERROR: Could not change directory to', os.path.dirname( fpath )
+            print 'FTP-ERROR: Could not change directory to', os.path.dirname( f.name )
             print e
-            print 'FTP-ERROR: Could not delete', fpath
+            print 'FTP-ERROR: Could not delete', f.name
             return
 
         try:
-            self.con.delete( os.path.basename( fpath ) )
+            self.con.delete( os.path.basename( f.name ) )
         except Exception, e:
-            print 'FTP-ERROR: Could not delete', fpath
+            print 'FTP-ERROR: Could not delete', f.name
             print e
 
 
