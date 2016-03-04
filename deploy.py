@@ -50,6 +50,7 @@ class lazy_file( object ):
         self.file = None
         self.a = a
         self.kw = kw
+        self.mode = 'A'
 
     def open( self ):
         self.file = open( self.name, *self.a, **self.kw )
@@ -108,7 +109,7 @@ class ftp_dest( object ):
             if not self.con:
                 self.connect()
 
-            if f.delete:
+            if f.mode == 'R':
                 self.rm( f )
             else:
                 self.put( f )
