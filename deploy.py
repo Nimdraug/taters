@@ -112,6 +112,7 @@ class ftp_dest( object ):
             if f.mode == 'R':
                 self.rm( f )
             else:
+                self.mkdirs( os.path.dirname( os.path.join( self.url.path, f.name ) ) )
                 self.put( f )
 
     def connect( self ):
