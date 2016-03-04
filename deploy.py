@@ -158,7 +158,6 @@ class ftp_dest( object ):
 
         last_existed = True
         for p in path.split( os.sep ):
-            print p, self.con.nlst()
             if not last_existed or p not in self.con.nlst():
                 self.con.mkd( p )
                 last_existed = False
