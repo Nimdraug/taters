@@ -4,6 +4,7 @@ import sh
 import sys
 import urlparse
 import paramiko
+import urllib
 from ftplib import FTP
 
 def debug_dest( files ):
