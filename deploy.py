@@ -125,15 +125,10 @@ class ftp_dest( object ):
 
         return [ to_path ]
 
-    def put( self, from_path, to_path = None ):
-        if to_path is None:
-            to_path = from_path
+    def put( self, f ):
+        self.con.cwd( os.path.dirname( f.name ) )
 
-        env.ftp_con.cwd( os.path.dirname( to_path ) )
-
-        env.ftp_con.storbinary( 'STOR %s' % os.path.basename( to_path ), file( from_path, 'rb' ) )
-
-        return [ to_path ]
+        self.con.storbinary( 'STOR %s' % os.path.basename( f.name ), f )
 
     def rm( self, fpath ):
         try:
