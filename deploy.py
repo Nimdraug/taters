@@ -109,10 +109,12 @@ class ftp_dest( object ):
             if not self.con:
                 self.connect()
 
+            f.name = os.path.join( self.url.path, f.name )
+
             if f.mode == 'R':
                 self.rm( f )
             else:
-                self.mkdirs( os.path.dirname( os.path.join( self.url.path, f.name ) ) )
+                self.mkdirs( os.path.dirname( f.name ) )
                 self.put( f )
 
     def connect( self ):
@@ -130,10 +132,9 @@ class ftp_dest( object ):
         return f
 
     def put( self, f ):
-        fpath = os.path.join( self.url.path, f.name )
-        self.con.cwd( os.path.dirname( fpath ) )
+        self.con.cwd( os.path.dirname( f.name ) )
 
-        self.con.storbinary( 'STOR %s' % os.path.basename( fpath ), f )
+        self.con.storbinary( 'STOR %s' % os.path.basename( f.name ), f )
 
     def rm( self, f ):
         try:
