@@ -129,9 +129,10 @@ class ftp_dest( object ):
         return f
 
     def put( self, f ):
-        self.con.cwd( os.path.dirname( f.name ) )
+        fpath = os.path.join( self.url.path, f.name )
+        self.con.cwd( os.path.dirname( fpath ) )
 
-        self.con.storbinary( 'STOR %s' % os.path.basename( f.name ), f )
+        self.con.storbinary( 'STOR %s' % os.path.basename( fpath ), f )
 
     def rm( self, f ):
         try:
