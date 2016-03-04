@@ -112,6 +112,9 @@ class ftp_dest( object ):
             else:
                 self.put( f )
 
+    def connect( self ):
+        self.con = FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
+
 class ssh_dest( object ):
     def __init__( self, url ):
         if isinstance( url, basestring ):
