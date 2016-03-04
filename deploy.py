@@ -115,6 +115,42 @@ class ftp_dest( object ):
     def connect( self ):
         self.con = FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
 
+    def _ftp_get( from_path, to_path = None ):
+        if to_path is None:
+            to_path = from_path
+
+        env.ftp_con.cwd( os.path.dirname( from_path ) )
+
+        env.ftp_con.retrbinary( 'RETR %s' % os.path.basename( from_path ), file( to_path, 'wb' ).write )
+
+        return [ to_path ]
+
+    def _ftp_put( from_path, to_path = None ):
+        if to_path is None:
+            to_path = from_path
+
+        env.ftp_con.cwd( os.path.dirname( to_path ) )
+
+        env.ftp_con.storbinary( 'STOR %s' % os.path.basename( to_path ), file( from_path, 'rb' ) )
+
+        return [ to_path ]
+
+    def _ftp_rm( fpath ):
+        try:
+            env.ftp_con.cwd( os.path.dirname( fpath ) )
+        except Exception, e:
+            print 'FTP-ERROR: Could not change directory to', os.path.dirname( fpath )
+            print e
+            print 'FTP-ERROR: Could not delete', fpath
+            return
+
+        try:
+            env.ftp_con.delete( os.path.basename( fpath ) )
+        except Exception, e:
+            print 'FTP-ERROR: Could not delete', fpath
+            print e
+
+
 class ssh_dest( object ):
     def __init__( self, url ):
         if isinstance( url, basestring ):
