@@ -148,17 +148,18 @@ class ftp_dest( object ):
             print 'FTP-ERROR: Could not delete', f.name
             print e
 
-    def _ftp_mkdirs( path ):
+    def mkdirs( self, path ):
         if path.startswith( '/' ):
             path = path[1:]
-        env.ftp_con.cwd( '/' )
+        self.con.cwd( '/' )
 
         last_existed = True
         for p in path.split( os.sep ):
-            if not last_existed or p not in env.ftp_con.nlst():
-                env.ftp_con.mkd( p )
+            print p, self.con.nlst()
+            if not last_existed or p not in self.con.nlst():
+                self.con.mkd( p )
                 last_existed = False
-            env.ftp_con.cwd( p )
+            self.con.cwd( p )
 
 class ssh_dest( object ):
     def __init__( self, url ):
