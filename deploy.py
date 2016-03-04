@@ -119,9 +119,9 @@ class ftp_dest( object ):
         if to_path is None:
             to_path = from_path
 
-        env.ftp_con.cwd( os.path.dirname( from_path ) )
+        self.con.cwd( os.path.dirname( from_path ) )
 
-        env.ftp_con.retrbinary( 'RETR %s' % os.path.basename( from_path ), file( to_path, 'wb' ).write )
+        self.con.retrbinary( 'RETR %s' % os.path.basename( from_path ), file( to_path, 'wb' ).write )
 
         return [ to_path ]
 
@@ -132,7 +132,7 @@ class ftp_dest( object ):
 
     def rm( self, fpath ):
         try:
-            env.ftp_con.cwd( os.path.dirname( fpath ) )
+            self.con.cwd( os.path.dirname( fpath ) )
         except Exception, e:
             print 'FTP-ERROR: Could not change directory to', os.path.dirname( fpath )
             print e
@@ -140,7 +140,7 @@ class ftp_dest( object ):
             return
 
         try:
-            env.ftp_con.delete( os.path.basename( fpath ) )
+            self.con.delete( os.path.basename( fpath ) )
         except Exception, e:
             print 'FTP-ERROR: Could not delete', fpath
             print e
