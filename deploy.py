@@ -96,8 +96,11 @@ class queue_file( object ):
 
 class ftp_dest( object ):
     def __init__( self, url ):
-        self.url = url
         self.con = None
+
+        if isinstance( url, basestring ):
+            url = urlparse.urlparse( url )
+        self.url = url
 
     def __call__( files ):
         for f in files:
