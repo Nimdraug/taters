@@ -47,13 +47,14 @@ class local_dest( object ):
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
         self.name = name
+        self._name = name
         self.file = None
         self.a = a
         self.kw = kw
         self.mode = 'A'
 
     def open( self ):
-        self.file = open( self.name, *self.a, **self.kw )
+        self.file = open( self._name, *self.a, **self.kw )
 
     def read( self, *a, **kw ):
         if not self.file:
