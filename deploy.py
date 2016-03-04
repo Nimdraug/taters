@@ -103,7 +103,7 @@ class ftp_dest( object ):
             url = urlparse.urlparse( url )
         self.url = url
 
-    def __call__( files ):
+    def __call__( self, files ):
         for f in files:
             if not self.con:
                 self.connect()
