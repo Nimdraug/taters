@@ -115,7 +115,7 @@ class ftp_dest( object ):
     def connect( self ):
         self.con = FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
 
-    def _ftp_get( from_path, to_path = None ):
+    def get( self, from_path, to_path = None ):
         if to_path is None:
             to_path = from_path
 
@@ -125,7 +125,7 @@ class ftp_dest( object ):
 
         return [ to_path ]
 
-    def _ftp_put( from_path, to_path = None ):
+    def put( self, from_path, to_path = None ):
         if to_path is None:
             to_path = from_path
 
@@ -135,7 +135,7 @@ class ftp_dest( object ):
 
         return [ to_path ]
 
-    def _ftp_rm( fpath ):
+    def rm( self, fpath ):
         try:
             env.ftp_con.cwd( os.path.dirname( fpath ) )
         except Exception, e:
