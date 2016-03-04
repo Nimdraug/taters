@@ -115,15 +115,16 @@ class ftp_dest( object ):
     def connect( self ):
         self.con = FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
 
-    def get( self, from_path, to_path = None ):
-        if to_path is None:
-            to_path = from_path
+    def get( self, path ):
+        self.con.cwd( os.path.dirname( path ) )
 
-        self.con.cwd( os.path.dirname( from_path ) )
+        f = StringIO.StringIO()
+        f.name = path
 
-        self.con.retrbinary( 'RETR %s' % os.path.basename( from_path ), file( to_path, 'wb' ).write )
+        self.con.retrbinary( 'RETR %s' % os.path.basename( from_path ), f.write )
+        f.seek( 0 )
 
-        return [ to_path ]
+        return f
 
     def put( self, f ):
         self.con.cwd( os.path.dirname( f.name ) )
