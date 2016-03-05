@@ -35,7 +35,7 @@ class local_dest( object ):
             if not os.path.exists( dpath ):
                 os.makedirs( dpath )
 
-            if f.mode != 'D':
+            if not f.delete:
                 print 'Deploying %s as %s...' % ( f.name, dfn ),
                 open( dfn, 'wb' ).write( f.read() )
                 print 'Done'
@@ -104,7 +104,7 @@ class ftp_dest( object ):
 
             f.name = os.path.join( self.url.path, f.name )
 
-            if f.mode == 'R':
+            if f.delete:
                 self.rm( f )
             else:
                 try:
@@ -129,6 +129,7 @@ class ftp_dest( object ):
         return p
 
     def put( self, f ):
+        print f.name
         self.con.cwd( os.path.dirname( f.name ) )
 
         self.con.storbinary( 'STOR %s' % os.path.basename( f.name ), f )
