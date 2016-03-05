@@ -82,7 +82,7 @@ class lazy_file( object ):
 
 class pipe( StringIO.StringIO ):
     def __init__( self, name, *a, **kw ):
-        super( pipe, self ).__init__( *a, **kw )
+        StringIO.StringIO.__init__( self, *a, **kw )
         self.name = name
 
     def reset( self ):
@@ -120,13 +120,12 @@ class ftp_dest( object ):
     def get( self, path ):
         self.con.cwd( os.path.dirname( path ) )
 
-        f = StringIO.StringIO()
-        f.name = path
+        p = pipe( path )
 
-        self.con.retrbinary( 'RETR %s' % os.path.basename( from_path ), f.write )
-        f.seek( 0 )
+        self.con.retrbinary( 'RETR %s' % os.path.basename( from_path ), p.write )
+        p.reset()
 
-        return f
+        return p
 
     def put( self, f ):
         self.con.cwd( os.path.dirname( f.name ) )
@@ -212,26 +211,23 @@ def dest_select( files, targets ):
         return targets.default( files )
 
 def uppercase( f ):
-    pipe = StringIO.StringIO()
+    p = pipe( f.name )
     # todo: run in thread to allow concurrency
-    pipe.write( f.read().upper() )
-    pipe.seek( 0 )
-    pipe.name = f.name
-    return pipe
+    p.write( f.read().upper() )
+    p.reset()
+    return p
 
 def lessc( f, d ):
-    pipe = StringIO.StringIO()
-    pipe.name = d
-    sh.lessc( '-', _in = f, _out = pipe )
-    pipe.seek( 0 )
-    return pipe
+    p = pipe( d )
+    sh.lessc( '-', _in = f, _out = p )
+    p.reset()
+    return p
 
 def uglifyjs( file_paths, d ):
-    pipe = StringIO.StringIO()
-    pipe.name = d
-    sh.uglifyjs( file_paths, _out = pipe )
-    pipe.seek( 0 )
-    return pipe
+    p = pipe( d )
+    sh.uglifyjs( file_paths, _out = p )
+    p.reset()
+    return p
 
 class dirlist_source( object ):
     def __init__( self, path = '.', recursive = True ):
