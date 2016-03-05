@@ -226,6 +226,13 @@ def lessc( f, d ):
     pipe.seek( 0 )
     return pipe
 
+def uglifyjs( file_paths, d ):
+    pipe = StringIO.StringIO()
+    pipe.name = d
+    sh.uglifyjs( file_paths, _out = pipe )
+    pipe.seek( 0 )
+    return pipe
+
 class dirlist_source( object ):
     def __init__( self, path = '.', recursive = True ):
         self.path = path
