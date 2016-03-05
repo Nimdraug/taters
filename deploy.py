@@ -255,7 +255,7 @@ class git_source( object ):
         self.path = path
 
     def get_ref_commit( self, ref = 'HEAD' ):
-        return str( sh.git( 'rev-parse', ref ) )
+        return str( sh.git( 'rev-parse', ref ) ).strip()
 
     def __call__( self, from_commit = None, to_commit = None ):
         if from_commit is not None:
