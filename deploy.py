@@ -202,6 +202,9 @@ class ssh_dest( object ):
 
 def test_splitter( files ):
     for f in files:
+        if f.delete:
+            yield f
+
         if f.name in [ __file__, 'targets.py' ] or f.name.endswith( '.pyc' ):
             pass
         elif f.name.endswith( '.txt' ):
