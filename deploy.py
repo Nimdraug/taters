@@ -18,7 +18,7 @@ def debug_dest( files ):
 
 def debug_pipe( files ):
     for f in files:
-        print f.name
+        print '+', f.name
 
         yield f
 
@@ -36,13 +36,11 @@ class local_dest( object ):
                 os.makedirs( dpath )
 
             if not f.delete:
-                print 'Deploying %s as %s...' % ( f.name, dfn ),
+                print 'local:%s' % dfn
                 open( dfn, 'wb' ).write( f.read() )
-                print 'Done'
             else:
-                print 'Removing %s...' % ( dfn ),
+                print 'local DELETE', dfn
                 os.remove( dfn )
-                print 'Done'
 
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
@@ -81,6 +79,7 @@ class lazy_file( object ):
         return self.file.tell( *a, **kw )
 
     def rename( self, name ):
+        print name
         self.name = name
 
         return self
@@ -95,6 +94,7 @@ class pipe( StringIO.StringIO ):
         self.seek( 0 )
 
     def rename( self, name ):
+        print name
         self.name = name
 
         return self
@@ -142,6 +142,7 @@ class ftp_dest( object ):
         print f.name
         self.con.cwd( os.path.dirname( f.name ) )
 
+        print '%s:%s' % ( self.url.hostname, f.name )
         self.con.storbinary( 'STOR %s' % os.path.basename( f.name ), f )
 
     def rm( self, f ):
@@ -154,6 +155,7 @@ class ftp_dest( object ):
             return
 
         try:
+            print '%s DELETE %s' % ( self.url.hostname, f.name )
             self.con.delete( os.path.basename( f.name ) )
         except Exception, e:
             print 'FTP-ERROR: Could not delete', f.name
@@ -199,13 +201,11 @@ class ssh_dest( object ):
                 sftp.mkdir( path )
 
             if f.delete:
-                print 'Removing %s...' % f.name,
+                print '%s DELETE %s' % ( self.url.hostname, f.name )
                 sftp.remove( f.name )
-                print 'Done'
             else:
-                print 'Deploying %s...' % ( f.name ),
+                print '%s:%s' % ( self.url.hostname, f.name )
                 sftp.putfo( f, f.name, callback = self.report_progress )
-                print 'Done'
 
     def report_progress( self, a, b ):
         print a, b
