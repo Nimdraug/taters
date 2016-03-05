@@ -80,6 +80,11 @@ class lazy_file( object ):
 
         return self.file.tell( *a, **kw )
 
+    def rename( self, name ):
+        self.name = name
+
+        return self
+
 class pipe( StringIO.StringIO ):
     def __init__( self, name, *a, **kw ):
         StringIO.StringIO.__init__( self, *a, **kw )
@@ -88,6 +93,11 @@ class pipe( StringIO.StringIO ):
 
     def reset( self ):
         self.seek( 0 )
+
+    def rename( self, name ):
+        self.name = name
+
+        return self
 
 class ftp_dest( object ):
     def __init__( self, url ):
