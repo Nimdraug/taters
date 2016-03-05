@@ -115,8 +115,13 @@ class ftp_dest( object ):
             if f.mode == 'R':
                 self.rm( f )
             else:
-                self.mkdirs( os.path.dirname( f.name ) )
-                self.put( f )
+                try:
+                    self.put( f )
+                except ftplib.error_perm as e:
+                    if e.message.startswith( '550' ):
+                        self.mkdirs( os.path.dirname( f.name ) )
+                    else:
+                        raise
 
     def connect( self ):
         self.con = ftplib.FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
