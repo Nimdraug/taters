@@ -51,7 +51,7 @@ class lazy_file( object ):
         self.file = None
         self.a = a
         self.kw = kw
-        self.mode = 'A'
+        self.delete = False
 
     def open( self ):
         self.file = open( self._name, *self.a, **self.kw )
@@ -84,6 +84,7 @@ class pipe( StringIO.StringIO ):
     def __init__( self, name, *a, **kw ):
         StringIO.StringIO.__init__( self, *a, **kw )
         self.name = name
+        self.delete = False
 
     def reset( self ):
         self.seek( 0 )
