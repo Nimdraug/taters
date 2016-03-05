@@ -188,9 +188,14 @@ class ssh_dest( object ):
             except IOError:
                 sftp.mkdir( path )
 
-            print 'Deploying %s...' % ( f.name ),
-            sftp.putfo( f, f.name, callback = self.report_progress )
-            print 'Done'
+            if f.delete:
+                print 'Removing %s...' % f.name,
+                sftp.remove( f.name )
+                print 'Done'
+            else:
+                print 'Deploying %s...' % ( f.name ),
+                sftp.putfo( f, f.name, callback = self.report_progress )
+                print 'Done'
 
     def report_progress( self, a, b ):
         print a, b
