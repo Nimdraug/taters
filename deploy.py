@@ -80,6 +80,14 @@ class lazy_file( object ):
 
         return self.file.tell( *a, **kw )
 
+class pipe( StringIO.StringIO ):
+    def __init__( self, name, *a, **kw ):
+        super( pipe, self ).__init__( *a, **kw )
+        self.name = name
+
+    def reset( self ):
+        self.seek( 0 )
+
 class ftp_dest( object ):
     def __init__( self, url ):
         self.con = None
