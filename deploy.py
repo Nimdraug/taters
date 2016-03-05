@@ -200,7 +200,7 @@ class ssh_dest( object ):
     def report_progress( self, a, b ):
         print a, b
 
-def test_splitter( files ):
+def example_splitter( files ):
     for f in files:
         if f.delete:
             yield f
