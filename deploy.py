@@ -264,13 +264,14 @@ class git_source( object ):
             all_files = True
 
         for l in files:
+            mode = 'A'
             if not all_files:
                 mode, fname = l.strip().split( '\t' )
             else:
-                mode = 'A'
                 fname = l.strip()
 
             f = lazy_file( fname )
-            f.mode = mode
+            if mode == 'D':
+                f.delete = True
 
             yield f
