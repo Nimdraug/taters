@@ -1,11 +1,11 @@
 import os.path
+import ftplib
 import StringIO
 import sh
 import sys
 import urlparse
 import paramiko
 import urllib
-from ftplib import FTP
 
 def debug_dest( files ):
     for f in files:
@@ -119,7 +119,7 @@ class ftp_dest( object ):
                 self.put( f )
 
     def connect( self ):
-        self.con = FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
+        self.con = ftplib.FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
 
     def get( self, path ):
         self.con.cwd( os.path.dirname( path ) )
