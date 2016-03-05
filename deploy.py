@@ -220,7 +220,7 @@ def example_splitter( files ):
         elif f.name.endswith( '.txt' ):
             yield uppercase( f )
         elif f.name.endswith( '.less' ):
-            yield lessc( f, f.name.replace( '.less', '.css' ) )
+            yield lessc( f ).rename( f.name.replace( '.less', '.css' ) )
         else:
             yield f
 
@@ -237,14 +237,14 @@ def uppercase( f ):
     p.reset()
     return p
 
-def lessc( f, d ):
-    p = pipe( d )
+def lessc( f ):
+    p = pipe( f.name )
     sh.lessc( '-', _in = f, _out = p )
     p.reset()
     return p
 
-def uglifyjs( file_paths, d ):
-    p = pipe( d )
+def uglifyjs( file_paths ):
+    p = pipe( '' )
     sh.uglifyjs( file_paths, _out = p )
     p.reset()
     return p
