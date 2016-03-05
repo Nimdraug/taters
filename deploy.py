@@ -155,6 +155,10 @@ class ftp_dest( object ):
     def mkdirs( self, path ):
         if path.startswith( '/' ):
             path = path[1:]
+
+        if not path:
+            return
+
         self.con.cwd( '/' )
 
         last_existed = True
