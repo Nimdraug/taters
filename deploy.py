@@ -79,7 +79,7 @@ class lazy_file( object ):
         return self.file.tell( *a, **kw )
 
     def rename( self, name ):
-        print name
+        print '>', name
         self.name = name
 
         return self
@@ -94,7 +94,7 @@ class pipe( StringIO.StringIO ):
         self.seek( 0 )
 
     def rename( self, name ):
-        print name
+        print '>', name
         self.name = name
 
         return self
