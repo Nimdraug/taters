@@ -133,7 +133,7 @@ class ftp_dest( object ):
 
         p = pipe( path )
 
-        self.con.retrbinary( 'RETR %s' % os.path.basename( from_path ), p.write )
+        self.con.retrbinary( 'RETR %s' % os.path.basename( path ), p.write )
         p.reset()
 
         return p
