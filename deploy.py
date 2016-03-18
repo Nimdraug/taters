@@ -40,7 +40,10 @@ class local_dest( object ):
                 open( dfn, 'wb' ).write( f.read() )
             else:
                 print 'local DELETE', dfn
-                os.remove( dfn )
+                try:
+                    os.remove( dfn )
+                except OSError:
+                    pass
 
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
