@@ -1,3 +1,5 @@
+from deploy import lazy_file
+import os
 import urlparse
 
 class location( object ):
