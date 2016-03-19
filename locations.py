@@ -1,3 +1,5 @@
+import urlparse
+
 class location( object ):
     def __init__( self, url ):
         self.url = url
@@ -34,7 +36,7 @@ class local_location( location ):
                 print 'local DELETE', dfn
                 os.remove( dfn )
 
-class ftp_dest( object ):
+class ftp_location( object ):
     def __init__( self, url ):
         self.con = None
 
@@ -42,7 +44,7 @@ class ftp_dest( object ):
             url = urlparse.urlparse( url )
         self.url = url
 
-    def __call__( self, files ):
+    def destination( self, files ):
         for f in files:
             if not self.con:
                 self.connect()
