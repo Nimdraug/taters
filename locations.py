@@ -127,7 +127,7 @@ class ssh_location( location ):
 
         self.url = url
 
-    def source( self, files ):
+    def destination( self, files ):
         print 'Connecting to', self.url.hostname
         con = paramiko.SSHClient()
         con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
