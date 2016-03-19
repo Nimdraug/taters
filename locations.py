@@ -38,7 +38,7 @@ class local_location( location ):
                 print 'local DELETE', dfn
                 os.remove( dfn )
 
-class ftp_location( location ):
+class remote_location( location ):
     def __init__( self, url ):
         self.con = None
 
@@ -46,6 +46,10 @@ class ftp_location( location ):
             url = urlparse.urlparse( url )
         self.url = url
 
+    def connect( self ):
+        pass
+
+class ftp_location( remote_location ):
     def destination( self, files ):
         for f in files:
             if not self.con:
