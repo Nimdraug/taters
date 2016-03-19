@@ -7,6 +7,10 @@ import urlparse
 import paramiko
 import urllib
 
+def null_dest( files ):
+    for f in files:
+        pass
+
 def debug_dest( files ):
     for f in files:
         print f.name
