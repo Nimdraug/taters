@@ -38,7 +38,7 @@ class local_location( location ):
                 print 'local DELETE', dfn
                 os.remove( dfn )
 
-class ftp_location( object ):
+class ftp_location( location ):
     def __init__( self, url ):
         self.con = None
 
