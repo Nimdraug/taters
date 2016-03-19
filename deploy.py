@@ -6,7 +6,7 @@ import sys
 import urlparse
 import paramiko
 import urllib
-import location
+import locations
 
 def debug_dest( files ):
     for f in files:
