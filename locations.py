@@ -115,3 +115,36 @@ class ftp_location( object ):
                 self.con.mkd( p )
                 last_existed = False
             self.con.cwd( p )
+
+class ssh_dest( object ):
+    def __init__( self, url ):
+        if isinstance( url, basestring ):
+            url = urlparse.urlparse( url )
+
+        self.url = url
+
+    def __call__( self, files ):
+        print 'Connecting to', self.url.hostname
+        con = paramiko.SSHClient()
+        con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
+        con.connect( self.url.hostname, port = self.url.port )
+        sftp = con.open_sftp()
+        sftp.chdir( self.url.path )
+
+        for f in files:
+            path = os.path.dirname( f.name )
+            
+            try:
+                sftp.stat( path )
+            except IOError:
+                sftp.mkdir( path )
+
+            if f.delete:
+                print '%s DELETE %s' % ( self.url.hostname, f.name )
+                sftp.remove( f.name )
+            else:
+                print '%s:%s' % ( self.url.hostname, f.name )
+                sftp.putfo( f, f.name, callback = self.report_progress )
+
+    def report_progress( self, a, b ):
+        print a, b
