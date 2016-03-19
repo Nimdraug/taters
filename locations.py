@@ -1,5 +1,8 @@
 from deploy import lazy_file
+import ftplib
 import os
+import paramiko
+import urllib
 import urlparse
 
 class location( object ):

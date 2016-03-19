@@ -1,11 +1,7 @@
 import os.path
-import ftplib
 import StringIO
 import sh
 import sys
-import urlparse
-import paramiko
-import urllib
 
 def null_dest( files ):
     for f in files:
