@@ -22,26 +22,6 @@ def debug_pipe( files ):
 
         yield f
 
-class local_dest( object ):
-    def __init__( self, path ):
-        self.path = path
-
-    def __call__( self, files ):
-        for f in files:
-            dfn = os.path.join( self.path, f.name )
-
-            # Ensure dest paths exist
-            dpath = os.path.dirname( dfn )
-            if not os.path.exists( dpath ):
-                os.makedirs( dpath )
-
-            if not f.delete:
-                print 'local:%s' % dfn
-                open( dfn, 'wb' ).write( f.read() )
-            else:
-                print 'local DELETE', dfn
-                os.remove( dfn )
-
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
         self.name = name
@@ -248,20 +228,6 @@ def uglifyjs( file_paths ):
     sh.uglifyjs( file_paths, _out = p )
     p.reset()
     return p
-
-class dirlist_source( object ):
-    def __init__( self, path = '.', recursive = True ):
-        self.path = path
-        self.recursive = recursive
-
-    def __call__( self ):
-        for fpath in os.listdir( self.path ):
-            fpath = os.path.relpath( os.path.join( self.path, fpath ) )
-            if os.path.isfile( fpath ):
-                yield lazy_file( fpath )
-            elif os.path.isdir( fpath ) and self.recursive:
-                for f in dirlist_source( fpath, True )():
-                    yield f
 
 class git_source( object ):
     def __init__( self, path = '.' ):
