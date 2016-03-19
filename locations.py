@@ -116,14 +116,14 @@ class ftp_location( object ):
                 last_existed = False
             self.con.cwd( p )
 
-class ssh_dest( object ):
+class ssh_location( location ):
     def __init__( self, url ):
         if isinstance( url, basestring ):
             url = urlparse.urlparse( url )
 
         self.url = url
 
-    def __call__( self, files ):
+    def source( self, files ):
         print 'Connecting to', self.url.hostname
         con = paramiko.SSHClient()
         con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
