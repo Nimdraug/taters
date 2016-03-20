@@ -85,6 +85,9 @@ class ftp_location( remote_location ):
     def connect( self ):
         self.con = ftplib.FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
 
+    def _remote_path( self, f ):
+        os.path.join( self.url.path, os.path.dirname( f.name ) )
+
     def get( self, path ):
         self.con.cwd( os.path.dirname( path ) )
 
