@@ -70,9 +70,8 @@ class ftp_location( remote_location ):
         os.path.join( self.url.path, os.path.dirname( f.name ) )
 
     def get( self, path ):
-        self.con.cwd( os.path.dirname( path ) )
-
         p = pipe( path )
+        self.con.cwd( _remote_path( p ) )
 
         self.con.retrbinary( 'RETR %s' % os.path.basename( path ), p.write )
         p.reset()
@@ -96,7 +95,7 @@ class ftp_location( remote_location ):
 
     def rm( self, f ):
         try:
-            self.con.cwd( os.path.dirname( f.name ) )
+            self.con.cwd( _remote_path( f ) )
         except Exception, e:
             print 'FTP-ERROR: Could not change directory to', os.path.dirname( f.name )
             print e
