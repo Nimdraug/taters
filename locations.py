@@ -52,6 +52,16 @@ class remote_location( location ):
     def connect( self ):
         pass
 
+    def destination( self, files ):
+        for f in files:
+            if not self.con:
+                self.connect()
+
+            if f.delete:
+                self.rm( f )
+            else:
+                self.put( f )
+
 class ftp_location( remote_location ):
     def destination( self, files ):
         for f in files:
@@ -68,6 +78,7 @@ class ftp_location( remote_location ):
                 except ftplib.error_perm as e:
                     if e.message.startswith( '550' ):
                         self.mkdirs( os.path.dirname( f.name ) )
+                        self.put( f )
                     else:
                         raise
 
@@ -135,23 +146,6 @@ class ssh_location( remote_location ):
         except IOError:
             self.mkdirs( self.url.path )
             self.con.chdir( self.url.path )
-
-    def destination( self, files ):
-        for f in files:
-            if not self.con:
-                self.connect()
-
-            path = os.path.dirname( f.name )
-            
-            try:
-                self.con.stat( path )
-            except IOError:
-                self.con.mkdir( path )
-
-            if f.delete:
-                self.rm( f )
-            else:
-                self.put( f )
 
     def put( self, f ):
         print '%s:%s' % ( self.url.hostname, f.name )
