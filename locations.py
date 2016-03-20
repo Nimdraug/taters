@@ -158,3 +158,11 @@ class ssh_location( remote_location ):
     def rm( self, f ):
         print '%s DELETE %s' % ( self.url.hostname, f.name )
         self.con.remove( f.name )
+
+    def mkdirs( self, path ):
+        cur_path = ''
+
+        for p in path.split( os.sep ):
+            cur_path = os.path.join( cur_path, p )
+            print p, cur_path
+            self.con.mkdir( cur_path )
