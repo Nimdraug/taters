@@ -22,7 +22,7 @@ class local_location( location ):
             if os.path.isfile( fpath ):
                 yield lazy_file( fpath )
             elif os.path.isdir( fpath ) and recursive:
-                for f in dirlist_source( fpath, True )():
+                for f in local_location( fpath ).source( True ):
                     yield f
 
     def destination( self, files ):
