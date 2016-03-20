@@ -149,7 +149,12 @@ class ssh_location( remote_location ):
 
     def put( self, f ):
         print '%s:%s' % ( self.url.hostname, f.name )
-        self.con.putfo( f, f.name, callback = self.report_progress )
+        try:
+            self.con.putfo( f, f.name, callback = self.report_progress )
+        except IOError:
+            # Most likely that dir does not exist, create and retry
+            self.mkdirs( os.path.dirname( f.name ) )
+            self.put( f )
 
     def report_progress( self, a, b ):
         print a, b
