@@ -129,7 +129,12 @@ class ssh_location( remote_location ):
         self.sshcli.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
         self.sshcli.connect( self.url.hostname, port = self.url.port )
         self.con = self.sshcli.open_sftp()
-        self.con.chdir( self.url.path )
+
+        try:
+            self.con.chdir( self.url.path )
+        except IOError:
+            self.mkdirs( self.url.path )
+            self.con.chdir( self.url.path )
 
     def destination( self, files ):
         for f in files:
