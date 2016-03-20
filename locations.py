@@ -160,8 +160,17 @@ class ssh_location( remote_location ):
 
     def mkdirs( self, path ):
         cur_path = ''
+        last_existed = True
 
         for p in path.split( os.sep ):
             cur_path = os.path.join( cur_path, p )
-            print p, cur_path
+            
+            if last_existed:
+                try:
+                    self.con.stat( cur_path )
+                    continue
+                except IOError:
+                    pass
+            
+            print 'creating', cur_path
             self.con.mkdir( cur_path )
