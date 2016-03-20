@@ -144,11 +144,17 @@ class ssh_location( remote_location ):
                 self.con.mkdir( path )
 
             if f.delete:
-                print '%s DELETE %s' % ( self.url.hostname, f.name )
-                self.con.remove( f.name )
+                self.rm( f )
             else:
-                print '%s:%s' % ( self.url.hostname, f.name )
-                self.con.putfo( f, f.name, callback = self.report_progress )
+                self.put( f )
+
+    def put( self, f ):
+        print '%s:%s' % ( self.url.hostname, f.name )
+        self.con.putfo( f, f.name, callback = self.report_progress )
 
     def report_progress( self, a, b ):
         print a, b
+
+    def rm( self, f ):
+        print '%s DELETE %s' % ( self.url.hostname, f.name )
+        self.con.remove( f.name )
