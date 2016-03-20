@@ -123,35 +123,32 @@ class ftp_location( remote_location ):
                 last_existed = False
             self.con.cwd( p )
 
-class ssh_location( location ):
-    def __init__( self, url ):
-        if isinstance( url, basestring ):
-            url = urlparse.urlparse( url )
-
-        self.url = url
+class ssh_location( remote_location ):
+    def connect( self ):
+        self.sshcli = paramiko.SSHClient()
+        self.sshcli.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
+        self.sshcli.connect( self.url.hostname, port = self.url.port )
+        self.con = self.sshcli.open_sftp()
+        self.con.chdir( self.url.path )
 
     def destination( self, files ):
-        print 'Connecting to', self.url.hostname
-        con = paramiko.SSHClient()
-        con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
-        con.connect( self.url.hostname, port = self.url.port )
-        sftp = con.open_sftp()
-        sftp.chdir( self.url.path )
-
         for f in files:
+            if not self.con:
+                self.connect()
+
             path = os.path.dirname( f.name )
             
             try:
-                sftp.stat( path )
+                self.con.stat( path )
             except IOError:
-                sftp.mkdir( path )
+                self.con.mkdir( path )
 
             if f.delete:
                 print '%s DELETE %s' % ( self.url.hostname, f.name )
-                sftp.remove( f.name )
+                self.con.remove( f.name )
             else:
                 print '%s:%s' % ( self.url.hostname, f.name )
-                sftp.putfo( f, f.name, callback = self.report_progress )
+                self.con.putfo( f, f.name, callback = self.report_progress )
 
     def report_progress( self, a, b ):
         print a, b
