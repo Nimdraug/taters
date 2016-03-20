@@ -202,3 +202,13 @@ class git_location( local_location ):
                 f.delete = True
 
             yield f
+
+class tar_location( location ):
+    # Use tarfile
+    # https://docs.python.org/2/library/tarfile.html
+    pass
+
+class zip_location( location ):
+    # Use zip
+    # https://docs.python.org/2/library/zip.html
+    pass
