@@ -63,25 +63,6 @@ class remote_location( location ):
                 self.put( f )
 
 class ftp_location( remote_location ):
-    def destination( self, files ):
-        for f in files:
-            if not self.con:
-                self.connect()
-
-            f.name = os.path.join( self.url.path, f.name )
-
-            if f.delete:
-                self.rm( f )
-            else:
-                try:
-                    self.put( f )
-                except ftplib.error_perm as e:
-                    if e.message.startswith( '550' ):
-                        self.mkdirs( os.path.dirname( f.name ) )
-                        self.put( f )
-                    else:
-                        raise
-
     def connect( self ):
         self.con = ftplib.FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
 
@@ -100,7 +81,15 @@ class ftp_location( remote_location ):
 
     def put( self, f ):
         print f.name
-        self.con.cwd( os.path.dirname( f.name ) )
+
+        fpath = _remote_path( f )
+
+        try:
+            self.con.cwd( fpath )
+        except ftplib.error_perm as e:
+            if e.message.startswith( '550' ):
+                self.mkdirs( fpath )
+                self.con.cwd( fpath )
 
         print '%s:%s' % ( self.url.hostname, f.name )
         self.con.storbinary( 'STOR %s' % os.path.basename( f.name ), f )
