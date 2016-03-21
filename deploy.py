@@ -27,12 +27,14 @@ class lazy_file( object ):
         self.name = name
         self._name = name
         self.file = None
+        self.size = 0
         self.a = a
         self.kw = kw
         self.delete = False
 
     def open( self ):
         self.file = open( self._name, *self.a, **self.kw )
+        self.size = os.stat( self._name ).st_size
 
     def read( self, *a, **kw ):
         if not self.file:
@@ -40,11 +42,13 @@ class lazy_file( object ):
 
         return self.file.read( *a, **kw )
 
-    def write( self, *a, **kw ):
+    def write( self, data, *a, **kw ):
         if not self.file:
             self.open()
 
-        return self.file.write( *a, **kw )
+        self.size += len( data )
+
+        return self.file.write( data, *a, **kw )
 
     def seek( self, *a, **kw ):
         if not self.file:
@@ -68,7 +72,12 @@ class pipe( StringIO.StringIO ):
     def __init__( self, name, *a, **kw ):
         StringIO.StringIO.__init__( self, *a, **kw )
         self.name = name
+        self.size = 0
         self.delete = False
+
+    def write( self, data, *a, **kw ):
+        super( pipe, self ).write( data, *a, **kw )
+        self.size += len( data )
 
     def reset( self ):
         self.seek( 0 )
