@@ -214,6 +214,15 @@ class tar_location( location ):
         for tarinfo in tar:
             yield tar.extractfile( tarinfo )
 
+    def destination( self, files ):
+        tar = tarfile.open( fileobj = self.f, mode = 'w|gz' )
+
+        for f in files:
+            f.read(0)
+            tarinfo = tarfile.TarInfo( f.name )
+            tarinfo.size = f.size
+            tar.addfile( tarinfo, f )
+
 class zip_location( location ):
     # Use zip
     # https://docs.python.org/2/library/zip.html
