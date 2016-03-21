@@ -39,7 +39,10 @@ class local_location( location ):
                 open( dfn, 'wb' ).write( f.read() )
             else:
                 print 'local DELETE', dfn
-                os.remove( dfn )
+                try:
+                    os.remove( dfn )
+                except OSError:
+                    pass
 
 class remote_location( location ):
     def __init__( self, url ):
