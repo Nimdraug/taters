@@ -7,6 +7,8 @@ import urlparse
 
 class location( object ):
     def __init__( self, url ):
+        if isinstance( url, basestring ):
+            url = urlparse.urlparse( url )
         self.url = url
 
     def source( self ):
@@ -46,11 +48,9 @@ class local_location( location ):
 
 class remote_location( location ):
     def __init__( self, url ):
-        self.con = None
+        super( remote_location, self ).__init__( url )
 
-        if isinstance( url, basestring ):
-            url = urlparse.urlparse( url )
-        self.url = url
+        self.con = None
 
     def connect( self ):
         pass
@@ -175,9 +175,6 @@ class ssh_location( remote_location ):
             self.con.mkdir( cur_path )
 
 class git_location( local_location ):
-    def __init__( self, path = '.' ):
-        self.path = path
-
     def get_ref_commit( self, ref = 'HEAD' ):
         return str( sh.git( 'rev-parse', ref ) ).strip()
 
