@@ -2,6 +2,7 @@ from deploy import lazy_file
 import ftplib
 import os
 import paramiko
+import tarfile
 import urllib
 import urlparse
 
@@ -204,9 +205,14 @@ class git_location( local_location ):
             yield f
 
 class tar_location( location ):
-    # Use tarfile
-    # https://docs.python.org/2/library/tarfile.html
-    pass
+    def __init__( self, f ):
+        self.f = f
+
+    def source( self ):
+        tar = tarfile.open( fileobj = self.f, mode = 'r|*' )
+
+        for tarinfo in tar:
+            yield tar.extractfile( tarinfo )
 
 class zip_location( location ):
     # Use zip
