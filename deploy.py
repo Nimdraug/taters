@@ -76,7 +76,7 @@ class pipe( StringIO.StringIO ):
         self.delete = False
 
     def write( self, data, *a, **kw ):
-        super( pipe, self ).write( data, *a, **kw )
+        StringIO.StringIO.write( self, data, *a, **kw )
         self.size += len( data )
 
     def reset( self ):
