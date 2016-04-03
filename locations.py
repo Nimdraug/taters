@@ -20,8 +20,8 @@ class location( object ):
 
 class local_location( location ):
     def source( self, recursive = False ):
-        for fpath in os.listdir( self.url ):
-            fpath = os.path.relpath( os.path.join( self.url, fpath ) )
+        for fpath in os.listdir( self.url.path ):
+            fpath = os.path.relpath( os.path.join( self.url.path, fpath ) )
             if os.path.isfile( fpath ):
                 yield lazy_file( fpath )
             elif os.path.isdir( fpath ) and recursive:
@@ -30,7 +30,7 @@ class local_location( location ):
 
     def destination( self, files ):
         for f in files:
-            dfn = os.path.join( self.url, f.name )
+            dfn = os.path.join( self.url.path, f.name )
 
             # Ensure dest paths exist
             dpath = os.path.dirname( dfn )
