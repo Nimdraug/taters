@@ -176,6 +176,9 @@ class ssh_location( remote_location ):
             self.con.mkdir( cur_path )
 
 class git_location( local_location ):
+    def __init__( self, url = '' ):
+        super( git_location, self ).__init__( url )
+
     def get_ref_commit( self, ref = 'HEAD' ):
         return str( sh.git( 'rev-parse', ref ) ).strip()
 
