@@ -72,11 +72,11 @@ class ftp_location( remote_location ):
         self.con = ftplib.FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
 
     def _remote_path( self, f ):
-        os.path.join( self.url.path, os.path.dirname( f.name ) )
+        return os.path.join( self.url.path, os.path.dirname( f.name ) )
 
     def get( self, path ):
         p = pipe( path )
-        self.con.cwd( _remote_path( p ) )
+        self.con.cwd( self._remote_path( p ) )
 
         self.con.retrbinary( 'RETR %s' % os.path.basename( path ), p.write )
         p.reset()
@@ -86,7 +86,7 @@ class ftp_location( remote_location ):
     def put( self, f ):
         print f.name
 
-        fpath = _remote_path( f )
+        fpath = self._remote_path( f )
 
         try:
             self.con.cwd( fpath )
