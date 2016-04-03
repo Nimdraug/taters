@@ -1,10 +1,11 @@
-from deploy import lazy_file
+from deploy import lazy_file, pipe
 import ftplib
 import os
 import paramiko
 import tarfile
 import urllib
 import urlparse
+import sh
 
 class location( object ):
     def __init__( self, url ):
