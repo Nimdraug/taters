@@ -6,6 +6,7 @@ import tarfile
 import urllib
 import urlparse
 import sh
+import socket
 
 class location( object ):
     def __init__( self, url ):
@@ -67,9 +68,23 @@ class remote_location( location ):
             else:
                 self.put( f )
 
+class BadPassiveFTP( ftplib.FTP ):
+    def makepasv(self):
+        host, port = ftplib.FTP.makepasv( self )
+
+        return socket.gethostbyname( self.host ), port
+
 class ftp_location( remote_location ):
+    def __init__( self, url, bad_passive_server = False ):
+        super( ftp_location, self ).__init__( url )
+        self.bad_passive_server = bad_passive_server
+
     def connect( self ):
-        self.con = ftplib.FTP()
+        if self.bad_passive_server:
+            self.con = ftplib.FTP()
+        else:
+            self.con = BadPassiveFTP()
+
         self.con.connect( self.url.hostname, self.url.port )
         self.con.login( urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
 
