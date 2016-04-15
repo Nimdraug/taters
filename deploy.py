@@ -69,7 +69,7 @@ class lazy_file( object ):
         return self
 
 class pipe:
-    class _reader:
+    class _reader( object ):
         def __init__( self, pipe ):
             self.pipe = pipe
             self.pos = 0
@@ -79,7 +79,7 @@ class pipe:
             self.pos += len( chunk )
             return chunk
 
-    class _writer( self, pipe ):
+    class _writer( object ):
         def __init__( self, pipe ):
             self.pipe = pipe
             self.pos = 0
