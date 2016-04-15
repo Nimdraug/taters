@@ -19,14 +19,14 @@ class location( object ):
     def destination( self, files ):
         pass
 
-class local_location( location ):
+class local( location ):
     def source( self, recursive = False ):
         for fpath in os.listdir( self.url.path ):
             fpath = os.path.relpath( os.path.join( self.url.path, fpath ) )
             if os.path.isfile( fpath ):
                 yield lazy_file( fpath )
             elif os.path.isdir( fpath ) and recursive:
-                for f in local_location( fpath ).source( True ):
+                for f in local( fpath ).source( True ):
                     yield f
 
     def destination( self, files ):
@@ -48,9 +48,9 @@ class local_location( location ):
                 except OSError:
                     pass
 
-class remote_location( location ):
+class remote( location ):
     def __init__( self, url ):
-        super( remote_location, self ).__init__( url )
+        super( remote, self ).__init__( url )
 
         self.con = None
 
@@ -67,7 +67,7 @@ class remote_location( location ):
             else:
                 self.put( f )
 
-class ftp_location( remote_location ):
+class ftp( remote ):
     def connect( self ):
         self.con = ftplib.FTP( self.url.hostname, urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
 
@@ -130,7 +130,7 @@ class ftp_location( remote_location ):
                 last_existed = False
             self.con.cwd( p )
 
-class ssh_location( remote_location ):
+class ssh( remote ):
     def connect( self ):
         self.sshcli = paramiko.SSHClient()
         self.sshcli.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
@@ -176,9 +176,9 @@ class ssh_location( remote_location ):
             print 'creating', cur_path
             self.con.mkdir( cur_path )
 
-class git_location( local_location ):
+class git( local ):
     def __init__( self, url = '' ):
-        super( git_location, self ).__init__( url )
+        super( git, self ).__init__( url )
 
     def get_ref_commit( self, ref = 'HEAD' ):
         return str( sh.git( 'rev-parse', ref ) ).strip()
@@ -208,7 +208,7 @@ class git_location( local_location ):
 
             yield f
 
-class tar_location( location ):
+class tar( location ):
     def __init__( self, f ):
         self.f = f
 
@@ -227,7 +227,7 @@ class tar_location( location ):
             tarinfo.size = f.size
             tar.addfile( tarinfo, f )
 
-class zip_location( location ):
+class zip( location ):
     # Use zip
     # https://docs.python.org/2/library/zip.html
     pass
