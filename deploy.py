@@ -74,6 +74,7 @@ class pipe:
         def __init__( self, pipe ):
             self.pipe = pipe
             self.pos = 0
+            self.delete = False
 
         def read( self, *a, **kw ):
             self.pipe.has_data.wait()
@@ -94,6 +95,7 @@ class pipe:
         def __init__( self, pipe ):
             self.pipe = pipe
             self.pos = 0
+            self.delete = False
 
         def write( self, chunk ):
             with self.pipe.chunks_lock:
