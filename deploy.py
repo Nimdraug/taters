@@ -146,7 +146,14 @@ def uppercase( f ):
     p = pipe( f.name )
 
     def run():
-        p.w.write( f.read().upper() )
+        while True:
+            chunk = f.read().upper()
+
+            if chunk:
+                p.w.write( chunk )
+            else:
+                break
+
         p.w.close()
 
     threading.Thread( target = run ).start()
