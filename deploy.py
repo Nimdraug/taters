@@ -123,18 +123,15 @@ def dest_select( files, targets ):
 def uppercase( f ):
     p = pipe( f.name )
     # todo: run in thread to allow concurrency
-    p.write( f.read().upper() )
-    p.reset()
-    return p
+    p.w.write( f.read().upper() )
+    return p.r
 
 def lessc( f ):
     p = pipe( f.name )
-    sh.lessc( '-', _in = f, _out = p )
-    p.reset()
-    return p
+    sh.lessc( '-', _in = f, _out = p.w.write )
+    return p.r
 
 def uglifyjs( file_paths ):
     p = pipe( '' )
-    sh.uglifyjs( file_paths, _out = p )
-    p.reset()
-    return p
+    sh.uglifyjs( file_paths, _out = p.w.write )
+    return p.r
