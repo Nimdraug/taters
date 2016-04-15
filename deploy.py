@@ -68,25 +68,30 @@ class lazy_file( object ):
 
         return self
 
-class pipe( StringIO.StringIO ):
-    def __init__( self, name, *a, **kw ):
-        StringIO.StringIO.__init__( self, *a, **kw )
-        self.name = name
-        self.size = 0
-        self.delete = False
+class pipe:
+    class _reader:
+        def __init__( self, pipe ):
+            self.pipe = pipe
+            self.pos = 0
 
-    def write( self, data, *a, **kw ):
-        StringIO.StringIO.write( self, data, *a, **kw )
-        self.size += len( data )
+        def read( self, *a, **kw ):
+            chunk = self.pipe.chunks.pop( 0 )
+            self.pos += len( chunk )
+            return chunk
 
-    def reset( self ):
-        self.seek( 0 )
+    class _writer( self, pipe ):
+        def __init__( self, pipe ):
+            self.pipe = pipe
+            self.pos = 0
 
-    def rename( self, name ):
-        print '>', name
-        self.name = name
+        def write( self, chunk ):
+            self.pipe.append( chunk )
+            self.pos += len( chunk )
 
-        return self
+    def __init__( self ):
+        self.chunks = []
+        self.r = _reader( self )
+        self.w = _writer( self )
 
 def example_splitter( files ):
     for f in files:
