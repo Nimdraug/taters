@@ -144,8 +144,13 @@ def dest_select( files, targets ):
 
 def uppercase( f ):
     p = pipe( f.name )
-    # todo: run in thread to allow concurrency
-    p.w.write( f.read().upper() )
+
+    def run():
+        p.w.write( f.read().upper() )
+        p.w.close()
+
+    threading.Thread( target = run ).start()
+
     return p.r
 
 def lessc( f ):
