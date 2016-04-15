@@ -79,6 +79,10 @@ class pipe:
             self.pos += len( chunk )
             return chunk
 
+        @property
+        def name(self):
+            return self.pipe.name
+
     class _writer( object ):
         def __init__( self, pipe ):
             self.pipe = pipe
@@ -87,6 +91,10 @@ class pipe:
         def write( self, chunk ):
             self.pipe.chunks.append( chunk )
             self.pos += len( chunk )
+
+        @property
+        def name(self):
+            return self.pipe.name
 
     def __init__( self, name ):
         self.chunks = []
