@@ -90,8 +90,8 @@ class pipe:
 
     def __init__( self, name ):
         self.chunks = []
-        self.r = _reader( self )
-        self.w = _writer( self )
+        self.r = self._reader( self )
+        self.w = self._writer( self )
         self.name = name
         self.delete = False
 
