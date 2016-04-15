@@ -2,6 +2,7 @@ import os.path
 import StringIO
 import sh
 import sys
+import threading
 
 def null_dest( files ):
     for f in files:
