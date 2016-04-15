@@ -80,7 +80,9 @@ class pipe:
             self.pipe.has_data.wait()
             with self.pipe.chunks_lock:
                 chunk = self.pipe.chunks.pop( 0 )
-                self.pos += len( chunk )
+
+                if chunk:
+                    self.pos += len( chunk )
 
                 if not len( self.pipe.chunks ):
                     self.pipe.has_data.clear()
@@ -100,7 +102,9 @@ class pipe:
         def write( self, chunk ):
             with self.pipe.chunks_lock:
                 self.pipe.chunks.append( chunk )
-                self.pos += len( chunk )
+
+                if chunk:
+                    self.pos += len( chunk )
 
                 self.pipe.has_data.set()
 
