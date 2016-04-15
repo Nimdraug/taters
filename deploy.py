@@ -88,10 +88,17 @@ class pipe:
             self.pipe.append( chunk )
             self.pos += len( chunk )
 
-    def __init__( self ):
+    def __init__( self, name ):
         self.chunks = []
         self.r = _reader( self )
         self.w = _writer( self )
+        self.name = name
+        self.delete = False
+
+    def rename( self, name ):
+        self.name = name
+
+        return self
 
 def example_splitter( files ):
     for f in files:
