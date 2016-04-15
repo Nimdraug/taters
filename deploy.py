@@ -75,9 +75,10 @@ class pipe:
             self.pos = 0
 
         def read( self, *a, **kw ):
-            chunk = self.pipe.chunks.pop( 0 )
-            self.pos += len( chunk )
-            return chunk
+            with self.pipe.chunks_lock:
+                chunk = self.pipe.chunks.pop( 0 )
+                self.pos += len( chunk )
+                return chunk
 
         @property
         def name(self):
@@ -89,8 +90,9 @@ class pipe:
             self.pos = 0
 
         def write( self, chunk ):
-            self.pipe.chunks.append( chunk )
-            self.pos += len( chunk )
+            with self.pipe.chunks_lock:
+                self.pipe.chunks.append( chunk )
+                self.pos += len( chunk )
 
         @property
         def name(self):
@@ -98,6 +100,7 @@ class pipe:
 
     def __init__( self, name ):
         self.chunks = []
+        self.chunks_lock = threading.Lock()
         self.r = self._reader( self )
         self.w = self._writer( self )
         self.name = name
