@@ -104,6 +104,9 @@ class pipe:
 
                 self.pipe.has_data.set()
 
+        def close( self ):
+            self.write( None )
+
         @property
         def name(self):
             return self.pipe.name
