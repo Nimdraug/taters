@@ -85,7 +85,7 @@ class pipe:
             self.pos = 0
 
         def write( self, chunk ):
-            self.pipe.append( chunk )
+            self.pipe.chunks.append( chunk )
             self.pos += len( chunk )
 
     def __init__( self, name ):
