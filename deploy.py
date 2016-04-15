@@ -101,6 +101,7 @@ class pipe:
     def __init__( self, name ):
         self.chunks = []
         self.chunks_lock = threading.Lock()
+        self.has_data = threading.Event()
         self.r = self._reader( self )
         self.w = self._writer( self )
         self.name = name
