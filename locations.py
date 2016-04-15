@@ -41,7 +41,13 @@ class local( location ):
 
             if not f.delete:
                 print 'local:%s' % dfn
-                open( dfn, 'wb' ).write( f.read() )
+                with open( dfn, 'wb' ) as dest:
+                    while True:
+                        chunk = f.read()
+                        if chunk:
+                            dest.write( chunk )
+                        else:
+                            break
             else:
                 print 'local DELETE', dfn
                 try:
