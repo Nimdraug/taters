@@ -143,6 +143,14 @@ class ssh( remote ):
             self.mkdirs( self.url.path )
             self.con.chdir( self.url.path )
 
+    def get( self, path ):
+        p = pipe( path )
+
+        self.con.getfo( path, p, callback = self.report_progress )
+        p.reset()
+
+        return p
+
     def put( self, f ):
         print '%s:%s' % ( self.url.hostname, f.name )
         try:
