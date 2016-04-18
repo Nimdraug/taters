@@ -76,9 +76,8 @@ class BadPassiveFTP( ftplib.FTP ):
 
 class ftp( remote ):
     def __init__( self, url, bad_passive_server = False ):
-        super( ftp_location, self ).__init__( url )
+        super( ftp, self ).__init__( url )
         self.bad_passive_server = bad_passive_server
-
 
     def connect( self ):
         if self.bad_passive_server:
