@@ -165,7 +165,11 @@ class ssh( remote ):
 
     def rm( self, f ):
         print '%s DELETE %s' % ( self.url.hostname, f.name )
-        self.con.remove( f.name )
+        try:
+            self.con.remove( f.name )
+        except IOError:
+            # Most likely file does not exist, no need to remove it then
+            pass
 
     def mkdirs( self, path ):
         cur_path = ''
