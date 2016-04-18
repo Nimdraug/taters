@@ -157,6 +157,7 @@ class ssh( remote ):
             self.con.putfo( f, f.name, callback = self.report_progress )
         except IOError:
             # Most likely that dir does not exist, create and retry
+            # TODO: Causes infinite recursion on permission denied
             self.mkdirs( os.path.dirname( f.name ) )
             self.put( f )
 
