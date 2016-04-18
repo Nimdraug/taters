@@ -91,6 +91,29 @@ class ftp( remote ):
     def _remote_path( self, f ):
         return os.path.join( self.url.path, os.path.dirname( f.name ) )
 
+    def source( self, base_path = None, recursive = False ):
+        if not self.con:
+            self.connect()
+
+        if not base_path:
+            base_path = self.url.path
+
+        for path in self.con.nlst( base_path ):
+            if path in [ '.', '..' ]:
+                continue
+
+            path = os.path.join( base_path, path )
+
+            try:
+                if self.con.nlst( path ) != [ path ] and recursive:
+                    for f in self.source( path, recursive ):
+                        yield f
+                    continue
+            except ftplib.error_perm:
+                pass
+
+            yield self.get( path )
+
     def get( self, path ):
         p = pipe( path )
         self.con.cwd( self._remote_path( p ) )
