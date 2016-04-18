@@ -58,6 +58,10 @@ class remote( location ):
     def connect( self ):
         pass
 
+    def source( self ):
+        for path in self.listpath( self.url.path ):
+            yield self.get( path )
+
     def destination( self, files ):
         for f in files:
             if not self.con:
