@@ -102,22 +102,24 @@ class ftp( remote ):
 
         cur_path = os.path.join( self.url.path, base_path )
 
-        for path in self.con.nlst( cur_path ):
+        try:
+            paths = self.con.nlst( cur_path )
+        except ftplib.error_perm:
+            return
+
+        if paths == [ cur_path ]:
+            yield self.get( cur_path ).rename( base_path )
+            return
+
+        for path in paths:
             if path in [ '.', '..' ]:
                 continue
 
             rel_path = os.path.join( base_path, path )
             full_path = os.path.join( cur_path, path )
 
-            try:
-                if self.con.nlst( full_path ) != [ full_path ] and recursive:
-                    for f in self.source( rel_path, recursive ):
-                        yield f
-                    continue
-            except ftplib.error_perm:
-                pass
-
-            yield self.get( full_path ).rename( rel_path )
+            for f in self.source( rel_path, recursive ):
+                yield f
 
     def get( self, path ):
         p = pipe( path )
