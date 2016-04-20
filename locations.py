@@ -22,9 +22,11 @@ class location( object ):
 
 class local( location ):
     def source( self, base_path = '', recursive = False ):
-        for path in os.listdir( os.path.join( self.url.path, base_path ) ):
+        cur_path = os.path.join( self.url.path, base_path )
+
+        for path in os.listdir( cur_path ):
             rel_path = os.path.join( base_path, path )
-            full_path = os.path.join( self.url.path, base_path, path )
+            full_path = os.path.join( cur_path, path )
 
             if os.path.isfile( full_path ):
                 yield lazy_file( full_path ).rename( rel_path )
