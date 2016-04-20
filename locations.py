@@ -21,17 +21,15 @@ class location( object ):
         pass
 
 class local( location ):
-    def source( self, base_path = None, recursive = False ):
-        if not base_path:
-            base_path = self.url.path
+    def source( self, base_path = '', recursive = False ):
+        for path in os.listdir( os.path.join( self.url.path, base_path ) ):
+            rel_path = os.path.join( base_path, path )
+            full_path = os.path.join( self.url.path, base_path, path )
 
-        for fpath in os.listdir( base_path ):
-            fpath = os.path.join( base_path, fpath )
-
-            if os.path.isfile( fpath ):
-                yield lazy_file( fpath )
-            elif os.path.isdir( fpath ) and recursive:
-                for f in local( fpath ).source( fpath, True ):
+            if os.path.isfile( full_path ):
+                yield lazy_file( full_path ).rename( rel_path )
+            elif os.path.isdir( full_path ) and recursive:
+                for f in self.source( rel_path, True ):
                     yield f
 
     def destination( self, files ):
