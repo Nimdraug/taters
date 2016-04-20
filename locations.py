@@ -116,7 +116,6 @@ class ftp( remote ):
                 continue
 
             rel_path = os.path.join( base_path, path )
-            full_path = os.path.join( cur_path, path )
 
             for f in self.source( rel_path, recursive ):
                 yield f
