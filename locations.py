@@ -7,6 +7,7 @@ import urllib
 import urlparse
 import sh
 import socket
+import stat
 
 class location( object ):
     def __init__( self, url ):
@@ -186,6 +187,22 @@ class ssh( remote ):
         except IOError:
             self.mkdirs( self.url.path )
             self.con.chdir( self.url.path )
+
+    def source( self, base_path = '', recursive = False ):
+        if not self.con:
+            self.connect()
+
+        cur_path = os.path.join( self.url.path, base_path )
+
+        for file_attr in self.con.listdir_attr( cur_path ):
+            rel_path = os.path.join( base_path, file_attr.filename )
+            full_path = os.path.join( cur_path, file_attr.filename )
+
+            if stat.S_ISDIR( file_attr.st_mode ) and recursive:
+                for f in self.source( rel_path, recursive ):
+                    yield f
+            else:
+                yield self.get( full_path ).rename( rel_path )
 
     def get( self, path ):
         p = pipe( path )
