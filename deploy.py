@@ -77,6 +77,7 @@ class pipe:
             self.delete = False
 
         def read( self, *a, **kw ):
+            self.pipe.need_data.set()
             self.pipe.has_data.wait()
             with self.pipe.chunks_lock:
                 chunk = self.pipe.chunks.pop( 0 )
@@ -118,6 +119,7 @@ class pipe:
     def __init__( self, name ):
         self.chunks = []
         self.chunks_lock = threading.Lock()
+        self.need_data = threading.Event()
         self.has_data = threading.Event()
         self.r = self._reader( self )
         self.w = self._writer( self )
