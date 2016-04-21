@@ -94,6 +94,9 @@ class pipe:
         def name(self):
             return self.pipe.name
 
+        def rename( self, name ):
+            return self.pipe.rename( name )
+
     class _writer( object ):
         def __init__( self, pipe ):
             self.pipe = pipe
@@ -115,6 +118,9 @@ class pipe:
         @property
         def name(self):
             return self.pipe.name
+
+        def rename( self, name ):
+            return self.pipe.rename( name )
 
     def __init__( self, name ):
         self.chunks = []
