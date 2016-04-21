@@ -7,6 +7,7 @@ import urllib
 import urlparse
 import sh
 import socket
+import stat
 
 class location( object ):
     def __init__( self, url ):
@@ -21,13 +22,17 @@ class location( object ):
         pass
 
 class local( location ):
-    def source( self, recursive = False ):
-        for fpath in os.listdir( self.url.path ):
-            fpath = os.path.relpath( os.path.join( self.url.path, fpath ) )
-            if os.path.isfile( fpath ):
-                yield lazy_file( fpath )
-            elif os.path.isdir( fpath ) and recursive:
-                for f in local( fpath ).source( True ):
+    def source( self, base_path = '', recursive = False ):
+        cur_path = os.path.join( self.url.path, base_path )
+
+        for path in os.listdir( cur_path ):
+            rel_path = os.path.join( base_path, path )
+            full_path = os.path.join( cur_path, path )
+
+            if os.path.isfile( full_path ):
+                yield lazy_file( full_path ).rename( rel_path )
+            elif os.path.isdir( full_path ) and recursive:
+                for f in self.source( rel_path, True ):
                     yield f
 
     def destination( self, files ):
@@ -96,6 +101,30 @@ class ftp( remote ):
 
     def _remote_path( self, f ):
         return os.path.join( self.url.path, os.path.dirname( f.name ) )
+
+    def source( self, base_path = '', recursive = False ):
+        if not self.con:
+            self.connect()
+
+        cur_path = os.path.join( self.url.path, base_path )
+
+        try:
+            paths = self.con.nlst( cur_path )
+        except ftplib.error_perm:
+            return
+
+        if paths == [ cur_path ]:
+            yield self.get( cur_path ).rename( base_path )
+            return
+
+        for path in paths:
+            if path in [ '.', '..' ]:
+                continue
+
+            rel_path = os.path.join( base_path, path )
+
+            for f in self.source( rel_path, recursive ):
+                yield f
 
     def get( self, path ):
         p = pipe( path )
@@ -166,12 +195,37 @@ class ssh( remote ):
             self.mkdirs( self.url.path )
             self.con.chdir( self.url.path )
 
+    def source( self, base_path = '', recursive = False ):
+        if not self.con:
+            self.connect()
+
+        cur_path = os.path.join( self.url.path, base_path )
+
+        for file_attr in self.con.listdir_attr( cur_path ):
+            rel_path = os.path.join( base_path, file_attr.filename )
+            full_path = os.path.join( cur_path, file_attr.filename )
+
+            if stat.S_ISDIR( file_attr.st_mode ) and recursive:
+                for f in self.source( rel_path, recursive ):
+                    yield f
+            else:
+                yield self.get( full_path ).rename( rel_path )
+
+    def get( self, path ):
+        p = pipe( path )
+
+        self.con.getfo( path, p, callback = self.report_progress )
+        p.reset()
+
+        return p
+
     def put( self, f ):
         print '%s:%s' % ( self.url.hostname, f.name )
         try:
             self.con.putfo( f, f.name, callback = self.report_progress )
         except IOError:
             # Most likely that dir does not exist, create and retry
+            # TODO: Causes infinite recursion on permission denied
             self.mkdirs( os.path.dirname( f.name ) )
             self.put( f )
 
@@ -180,7 +234,11 @@ class ssh( remote ):
 
     def rm( self, f ):
         print '%s DELETE %s' % ( self.url.hostname, f.name )
-        self.con.remove( f.name )
+        try:
+            self.con.remove( f.name )
+        except IOError:
+            # Most likely file does not exist, no need to remove it then
+            pass
 
     def mkdirs( self, path ):
         cur_path = ''
