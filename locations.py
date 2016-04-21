@@ -131,10 +131,14 @@ class ftp( remote ):
         p = pipe( path )
         self.con.cwd( self._remote_path( p ) )
 
-        self.con.retrbinary( 'RETR %s' % os.path.basename( path ), p.write )
-        p.reset()
+        def run():
+            p.need_data.wait()
+            self.con.retrbinary( 'RETR %s' % os.path.basename( path ), p.w.write )
+            p.w.write( None )
 
-        return p
+        threading.Thread( target = run ).start()
+
+        return p.r
 
     def put( self, f ):
         print f.name
