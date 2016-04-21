@@ -8,6 +8,7 @@ import urlparse
 import sh
 import socket
 import stat
+import threading
 
 class location( object ):
     def __init__( self, url ):
@@ -214,10 +215,14 @@ class ssh( remote ):
     def get( self, path ):
         p = pipe( path )
 
-        self.con.getfo( path, p, callback = self.report_progress )
-        p.reset()
+        def run():
+            p.need_data.wait()
+            self.con.getfo( path, p.w, callback = self.report_progress )
+            p.w.write( None )
 
-        return p
+        threading.Thread( target = run ).start()
+
+        return p.r
 
     def put( self, f ):
         print '%s:%s' % ( self.url.hostname, f.name )
