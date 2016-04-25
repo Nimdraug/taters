@@ -114,6 +114,7 @@ class pipe:
             self.delete = False
 
         def write( self, chunk ):
+            self.pipe.not_full.wait()
             with self.pipe.chunks_lock:
                 self.pipe.chunks.append( chunk )
 
@@ -122,7 +123,7 @@ class pipe:
                     self.chunk_size += len( chunk )
 
                     if chunk_size >= self.pipe.chunk_max:
-                        self.pipe.is_full.set()
+                        self.pipe.not_full.clear()
 
                 self.pipe.has_data.set()
 
