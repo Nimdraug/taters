@@ -119,6 +119,10 @@ class pipe:
 
                 if chunk:
                     self.pos += len( chunk )
+                    self.chunk_size += len( chunk )
+
+                    if chunk_size >= self.pipe.chunk_max:
+                        self.pipe.is_full.set()
 
                 self.pipe.has_data.set()
 
@@ -136,6 +140,7 @@ class pipe:
     def __init__( self, name, chunk_max = 1024 * 8 ):
         self.chunks = []
         self.chunks_lock = threading.Lock()
+        self.chunk_size = 0
         self.chunk_max = chunk_max
         self.need_data = threading.Event()
         self.has_data = threading.Event()
