@@ -111,6 +111,9 @@ class pipe:
             self.pipe.rename( name )
             return self
 
+        def flush( self ):
+            pass
+
     class _writer( object ):
         def __init__( self, pipe ):
             self.pipe = pipe
@@ -141,6 +144,9 @@ class pipe:
         def rename( self, name ):
             self.pipe.rename( name )
             return self
+
+        def flush( self ):
+            pass
 
     def __init__( self, name, chunk_max = 1024 * 8 ):
         self.chunks = []
