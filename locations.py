@@ -1,4 +1,4 @@
-from deploy import lazy_file, pipe
+from deploy import lazy_file, pipe, read_all
 import ftplib
 import os
 import paramiko
@@ -48,12 +48,7 @@ class local( location ):
             if not f.delete:
                 print 'local:%s' % dfn
                 with open( dfn, 'wb' ) as dest:
-                    while True:
-                        chunk = f.read()
-                        if chunk:
-                            dest.write( chunk )
-                        else:
-                            break
+                    read_all( f, dest.write )
             else:
                 print 'local DELETE', dfn
                 try:
