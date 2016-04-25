@@ -145,6 +145,7 @@ class pipe:
         self.need_data = threading.Event()
         self.has_data = threading.Event()
         self.not_full = threading.Event()
+        self.not_full.set()
         self.r = self._reader( self )
         self.w = self._writer( self )
         self.name = name
