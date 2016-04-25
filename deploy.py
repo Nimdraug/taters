@@ -95,7 +95,7 @@ class pipe:
                     self.pos += len( chunk )
                     self.pipe.chunk_size -= len( chunk )
 
-                    if chunk_size < self.pipe.chunk_max:
+                    if self.pipe.chunk_size < self.pipe.chunk_max:
                         self.pipe.not_full.set()
 
                 if not len( self.pipe.chunks ):
@@ -124,9 +124,9 @@ class pipe:
 
                 if chunk:
                     self.pos += len( chunk )
-                    self.chunk_size += len( chunk )
+                    self.pipe.chunk_size += len( chunk )
 
-                    if chunk_size >= self.pipe.chunk_max:
+                    if self.pipe.chunk_size >= self.pipe.chunk_max:
                         self.pipe.not_full.clear()
 
                 self.pipe.has_data.set()
