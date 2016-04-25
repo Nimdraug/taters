@@ -130,6 +130,7 @@ class pipe:
                     self.pipe.chunk_size += len( chunk )
 
                     if self.pipe.chunk_size >= self.pipe.chunk_max:
+                        print 'full!'
                         self.pipe.not_full.clear()
 
                 self.pipe.has_data.set()
@@ -148,7 +149,7 @@ class pipe:
         def flush( self ):
             pass
 
-    def __init__( self, name, chunk_max = 1024 * 8 ):
+    def __init__( self, name, chunk_max = 8 * 1024 * 1024 ):
         self.chunks = []
         self.chunks_lock = threading.Lock()
         self.chunk_size = 0
