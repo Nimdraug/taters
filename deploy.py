@@ -23,6 +23,9 @@ def debug_pipe( files ):
 
         yield f
 
+def read_all( to = None, chunk_size = None ):
+    pass
+
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
         self.name = name
