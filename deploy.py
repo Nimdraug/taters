@@ -23,7 +23,7 @@ def debug_pipe( files ):
 
         yield f
 
-def read_all( to, chunk_size = None ):
+def read_all( f, to, chunk_size = None ):
     pass
 
 class lazy_file( object ):
