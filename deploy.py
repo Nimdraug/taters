@@ -25,7 +25,7 @@ def debug_pipe( files ):
 
 def read_all( f, to, chunk_size = None ):
     while True:
-        chunk = f.read( chunk_size )
+        chunk = f.read( *( [ chunk_size ] if chunk_size else [] ) )
 
         if chunk:
             to( chunk )
