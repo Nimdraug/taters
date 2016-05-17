@@ -82,6 +82,15 @@ class pipe( object ):
     def read( self, *a, **kw ):
         return self.buffer.read( *a, **kw )
 
+    def flush( self ):
+        self.buffer.flush()
+
+    def seek( self, pos ):
+        self.buffer.seek( pos )
+
+    def tell( self ):
+        self.buffer.tell()
+
     def reset( self ):
         self.buffer.seek( 0 )
 
