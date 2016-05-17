@@ -80,7 +80,7 @@ class pipe( object ):
         self.size += len( data )
 
     def read( self, *a, **kw ):
-        self.buffer.read( *a, **kw )
+        return self.buffer.read( *a, **kw )
 
     def reset( self ):
         self.buffer.seek( 0 )
