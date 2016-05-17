@@ -23,6 +23,9 @@ class location( object ):
         pass
 
 class local( location ):
+    def __init__( self, url = '.' ):
+        super( local, self ).__init__( url )
+
     def source( self, base_path = '', recursive = False ):
         cur_path = os.path.join( self.url.path, base_path )
 
