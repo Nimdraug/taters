@@ -199,9 +199,9 @@ def uppercase( f ):
 
     return p.r
 
-def lessc( f ):
+def lessc( f, *a, **kw ):
     p = pipe( f.name )
-    sh.lessc( '-', _in = f, _out = p.w.write, _bg = True )
+    sh.lessc( '-', *a, _in = f, _out = p.w.write, **kw )
     return p.r
 
 def uglifyjs( file_paths ):
