@@ -68,19 +68,22 @@ class lazy_file( object ):
 
         return self
 
-class pipe( StringIO.StringIO ):
+class pipe( object ):
     def __init__( self, name, *a, **kw ):
-        StringIO.StringIO.__init__( self, *a, **kw )
+        self.buffer = StringIO.StringIO( *a, **kw )
         self.name = name
         self.size = 0
         self.delete = False
 
     def write( self, data, *a, **kw ):
-        StringIO.StringIO.write( self, data, *a, **kw )
+        self.buffer.write( data, *a, **kw )
         self.size += len( data )
 
+    def read( self, *a, **kw ):
+        self.buffer.read( *a, **kw )
+
     def reset( self ):
-        self.seek( 0 )
+        self.buffer.seek( 0 )
 
     def rename( self, name ):
         print '>', name
