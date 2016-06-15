@@ -1,1 +1,4 @@
 *.pyc
+build/
+deploy.egg-info/
+dist/
