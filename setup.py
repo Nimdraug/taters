@@ -9,8 +9,5 @@ setup(
     maintainer_email = 'martin@designondemand.com.au',
     description = 'A fully modular build and deployment framework',
     
-    py_modules = [
-        '__init__', 'deploy', 'locations'
-    ]
-
+    packages = [ 'deploy' ]
 )
