@@ -10,7 +10,7 @@ setup(
     description = 'A fully modular build and deployment framework',
     
     py_modules = [
-        'deploy'
+        '__init__', 'deploy', 'locations'
     ]
 
 )
