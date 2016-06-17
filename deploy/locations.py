@@ -241,8 +241,8 @@ class ssh( remote ):
             self.mkdirs( os.path.dirname( f.name ) )
             self.put( f )
 
-    def report_progress( self, a, b ):
-        print a, b
+    def report_progress( self, prog, of ):
+        print '%s of %s\r' % ( prog, of ),
 
     def rm( self, f ):
         print '%s DELETE %s' % ( self.url.hostname, f.name )
