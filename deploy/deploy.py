@@ -140,7 +140,7 @@ class pipe:
                 self.pipe.has_data.set()
 
         def close( self ):
-            self.write( None )
+            self.write( '' )
 
         @property
         def name(self):
