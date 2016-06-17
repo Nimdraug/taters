@@ -132,7 +132,7 @@ class ftp( remote ):
         def run():
             p.need_data.wait()
             self.con.retrbinary( 'RETR %s' % os.path.basename( path ), p.w.write )
-            p.w.write( None )
+            p.w.close()
 
         threading.Thread( target = run ).start()
 
@@ -225,7 +225,7 @@ class ssh( remote ):
             except Exception as e:
                 p.w.write( e )
 
-            p.w.write( None )
+            p.w.close()
 
         threading.Thread( target = run ).start()
 
