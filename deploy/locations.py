@@ -219,7 +219,12 @@ class ssh( remote ):
 
         def run():
             p.need_data.wait()
-            self.con.getfo( path, p.w, callback = self.report_progress )
+
+            try:
+                self.con.getfo( path, p.w, callback = self.report_progress )
+            except Exception as e:
+                p.w.write( e )
+
             p.w.write( None )
 
         threading.Thread( target = run ).start()
