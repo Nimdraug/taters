@@ -187,6 +187,7 @@ class ftp( remote ):
 
 class ssh( remote ):
     def connect( self ):
+        print 'C', self.url
         self.sshcli = paramiko.SSHClient()
         self.sshcli.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
         self.sshcli.connect( self.url.hostname, port = self.url.port or 22 )
@@ -215,6 +216,7 @@ class ssh( remote ):
                 yield self.get( full_path ).rename( rel_path )
 
     def get( self, path ):
+        print 'G', path
         p = pipe( path )
 
         def run():
@@ -232,7 +234,7 @@ class ssh( remote ):
         return p.r
 
     def put( self, f ):
-        print '%s:%s' % ( self.url.hostname, f.name )
+        print 'P', f.name
         try:
             self.con.putfo( f, f.name, callback = self.report_progress )
         except IOError:
@@ -270,7 +272,7 @@ class ssh( remote ):
                 except IOError:
                     pass
             
-            print 'creating', cur_path
+            print '+D', cur_path
             self.con.mkdir( cur_path )
 
 class git( local ):
