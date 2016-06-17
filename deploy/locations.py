@@ -189,7 +189,7 @@ class ssh( remote ):
     def connect( self ):
         self.sshcli = paramiko.SSHClient()
         self.sshcli.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
-        self.sshcli.connect( self.url.hostname, port = self.url.port )
+        self.sshcli.connect( self.url.hostname, port = self.url.port or 22 )
         self.con = self.sshcli.open_sftp()
 
         try:
