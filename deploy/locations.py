@@ -252,6 +252,10 @@ class ssh( remote ):
         last_existed = True
 
         for p in path.split( os.sep ):
+            if p == '':
+                self.con.chdir( '/' )
+                continue
+
             cur_path = os.path.join( cur_path, p )
             
             if last_existed:
