@@ -91,7 +91,9 @@ class pipe:
             with self.pipe.chunks_lock:
                 chunk = self.pipe.chunks.pop( 0 )
 
-                if chunk:
+                if isinstance( chunk, Exception ):
+                    raise chunk
+                elif chunk:
                     self.pos += len( chunk )
                     self.pipe.chunk_size -= len( chunk )
 
@@ -125,7 +127,9 @@ class pipe:
             with self.pipe.chunks_lock:
                 self.pipe.chunks.append( chunk )
 
-                if chunk:
+                if isinstance( chunk, Exception ):
+                    pass
+                elif chunk:
                     self.pos += len( chunk )
                     self.pipe.chunk_size += len( chunk )
 
