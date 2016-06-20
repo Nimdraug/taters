@@ -188,16 +188,17 @@ class ftp( remote ):
 class ssh( remote ):
     def connect( self ):
         print 'C', self.url
-        self.sshcli = paramiko.SSHClient()
-        self.sshcli.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
-        self.sshcli.connect( self.url.hostname, port = self.url.port or 22 )
-        self.con = self.sshcli.open_sftp()
+        self.con = paramiko.SSHClient()
+        self.con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
+        self.con.connect( self.url.hostname, port = self.url.port or 22 )
+
+        sftp = self.con.open_sftp()
 
         try:
-            self.con.chdir( self.url.path )
+            sftp.chdir( self.url.path )
         except IOError:
             self.mkdirs( self.url.path )
-            self.con.chdir( self.url.path )
+            sftp.chdir( self.url.path )
 
     def source( self, base_path = '', recursive = False ):
         if not self.con:
@@ -222,8 +223,10 @@ class ssh( remote ):
         def run():
             p.need_data.wait()
 
+            sftp = self.con.open_sftp()
+
             try:
-                self.con.getfo( path, p.w, callback = self.report_progress )
+                sftp.getfo( path, p.w, callback = self.report_progress )
             except Exception as e:
                 p.w.write( e )
 
@@ -235,8 +238,11 @@ class ssh( remote ):
 
     def put( self, f ):
         print 'P', f.name
+
+        sftp = self.con.open_sftp()
+
         try:
-            self.con.putfo( f, f.name, callback = self.report_progress )
+            sftp.putfo( f, f.name, callback = self.report_progress )
         except IOError:
             # Most likely that dir does not exist, create and retry
             # TODO: Causes infinite recursion on permission denied
@@ -248,8 +254,9 @@ class ssh( remote ):
 
     def rm( self, f ):
         print '%s DELETE %s' % ( self.url.hostname, f.name )
+        sftp = self.con.open_sftp()
         try:
-            self.con.remove( f.name )
+            sftp.remove( f.name )
         except IOError:
             # Most likely file does not exist, no need to remove it then
             pass
@@ -257,23 +264,24 @@ class ssh( remote ):
     def mkdirs( self, path ):
         cur_path = ''
         last_existed = True
+        sftp = self.con.open_sftp()
 
         for p in path.split( os.sep ):
             if p == '':
-                self.con.chdir( '/' )
+                sftp.chdir( '/' )
                 continue
 
             cur_path = os.path.join( cur_path, p )
             
             if last_existed:
                 try:
-                    self.con.stat( cur_path )
+                    sftp.stat( cur_path )
                     continue
                 except IOError:
                     pass
             
             print '+D', cur_path
-            self.con.mkdir( cur_path )
+            sftp.mkdir( cur_path )
 
 class git( local ):
     def __init__( self, url = '' ):
