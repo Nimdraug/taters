@@ -23,7 +23,7 @@ def debug_pipe( files ):
 
         yield f
 
-def read_all( f, to, chunk_size = None ):
+def read_all_to( f, to, chunk_size = None ):
     while True:
         chunk = f.read( *( [ chunk_size ] if chunk_size else [] ) )
 
@@ -31,6 +31,16 @@ def read_all( f, to, chunk_size = None ):
             to( chunk )
         else:
             break
+
+def read_all( f, chunk_size = None ):
+    ret = ''
+    while True:
+        chunk = f.read( *( [ chunk_size ] if chunk_size else [] ) )
+
+        if chunk:
+            ret += chunk
+        else:
+            return ret
 
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
