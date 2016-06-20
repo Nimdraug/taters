@@ -192,13 +192,12 @@ class ssh( remote ):
         self.con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
         self.con.connect( self.url.hostname, port = self.url.port or 22 )
 
+        # Ensure base dir exists
         sftp = self.con.open_sftp()
-
         try:
             sftp.chdir( self.url.path )
         except IOError:
             self.mkdirs( self.url.path )
-            sftp.chdir( self.url.path )
 
     def source( self, base_path = '', recursive = False ):
         if not self.con:
@@ -265,16 +264,18 @@ class ssh( remote ):
             pass
 
     def mkdirs( self, path ):
+        sftp = self.con.open_sftp()
+
+        if path.startswith( '/' ):
+            sftp.chdir( '/' )
+            path = path[1:]
+        else:
+            sftp.chdir( self.url.path )
+
         cur_path = ''
         last_existed = True
-        sftp = self.con.open_sftp()
-        sftp.chdir( self.url.path )
 
         for p in path.split( os.sep ):
-            if p == '':
-                sftp.chdir( '/' )
-                continue
-
             cur_path = os.path.join( cur_path, p )
             
             if last_existed:
