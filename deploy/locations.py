@@ -226,6 +226,7 @@ class ssh( remote ):
             sftp = self.con.open_sftp()
 
             try:
+                sftp.chdir( self.url.path )
                 sftp.getfo( path, p.w, callback = self.report_progress )
             except Exception as e:
                 p.w.write( e )
@@ -240,6 +241,7 @@ class ssh( remote ):
         print 'P', f.name
 
         sftp = self.con.open_sftp()
+        sftp.chdir( self.url.path )
 
         try:
             sftp.putfo( f, f.name, callback = self.report_progress )
@@ -255,6 +257,7 @@ class ssh( remote ):
     def rm( self, f ):
         print '%s DELETE %s' % ( self.url.hostname, f.name )
         sftp = self.con.open_sftp()
+        sftp.chdir( self.url.path )
         try:
             sftp.remove( f.name )
         except IOError:
@@ -265,6 +268,7 @@ class ssh( remote ):
         cur_path = ''
         last_existed = True
         sftp = self.con.open_sftp()
+        sftp.chdir( self.url.path )
 
         for p in path.split( os.sep ):
             if p == '':
