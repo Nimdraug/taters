@@ -228,7 +228,7 @@ def uglifyjs( file_paths ):
     p = pipe( '' )
 
     def run():
-        sh.uglifyjs( file_paths, _out = p.w.write, _bg = True )
+        sh.uglifyjs( file_paths, _out = p.w.write )
         p.w.close()
 
     threading.Thread( target = run ).start()
