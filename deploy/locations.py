@@ -187,7 +187,7 @@ class ftp( remote ):
 
 class ssh( remote ):
     def connect( self ):
-        print 'C', self.url
+        print 'C', urlparse.urlunparse( self.url )
         self.con = paramiko.SSHClient()
         self.con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
         self.con.connect( self.url.hostname, port = self.url.port or 22 )
