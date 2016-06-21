@@ -159,7 +159,7 @@ class ftp( remote ):
 
     def rm( self, f ):
         try:
-            self.con.cwd( _remote_path( f ) )
+            self.con.cwd( self._remote_path( f ) )
         except Exception, e:
             print 'FTP-ERROR: Could not change directory to', os.path.dirname( f.name )
             print e
