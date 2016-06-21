@@ -127,11 +127,15 @@ class ftp( remote ):
 
     def get( self, path ):
         p = pipe( path )
-        self.con.cwd( self._remote_path( p ) )
 
         def run():
             p.need_data.wait()
-            self.con.retrbinary( 'RETR %s' % os.path.basename( path ), p.w.write )
+            try:
+                self.con.cwd( self._remote_path( p ) )
+                self.con.retrbinary( 'RETR %s' % os.path.basename( path ), p.w.write )
+            except Exception as e:
+                p.w.write( e )
+
             p.w.close()
 
         threading.Thread( target = run ).start()
