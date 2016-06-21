@@ -90,6 +90,7 @@ class ftp( remote ):
         self.bad_passive_server = bad_passive_server
 
     def connect( self ):
+        print 'C', urlparse.urlunparse( self.url )
         if self.bad_passive_server:
             self.con = ftplib.FTP()
         else:
@@ -126,6 +127,7 @@ class ftp( remote ):
                 yield f
 
     def get( self, path ):
+        print 'G', path
         p = pipe( path )
 
         def run():
@@ -143,7 +145,7 @@ class ftp( remote ):
         return p.r
 
     def put( self, f ):
-        print f.name
+        print 'P', f.name
 
         fpath = self._remote_path( f )
 
@@ -158,6 +160,7 @@ class ftp( remote ):
         self.con.storbinary( 'STOR %s' % os.path.basename( f.name ), f )
 
     def rm( self, f ):
+        print 'R', f.name
         try:
             self.con.cwd( self._remote_path( f ) )
         except Exception, e:
@@ -185,6 +188,7 @@ class ftp( remote ):
         last_existed = True
         for p in path.split( os.sep ):
             if not last_existed or p not in self.con.nlst():
+                print '+D', p
                 self.con.mkd( p )
                 last_existed = False
             self.con.cwd( p )
@@ -258,7 +262,7 @@ class ssh( remote ):
         print '%s of %s\r' % ( prog, of ),
 
     def rm( self, f ):
-        print '%s DELETE %s' % ( self.url.hostname, f.name )
+        print 'R', f.name
         sftp = self.con.open_sftp()
         sftp.chdir( self.url.path )
         try:
