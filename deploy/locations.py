@@ -198,7 +198,16 @@ class ssh( remote ):
         print 'C', urlparse.urlunparse( self.url )
         self.con = paramiko.SSHClient()
         self.con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
-        self.con.connect( self.url.hostname, port = self.url.port or 22 )
+
+        args = {}
+        if self.url.port:
+            args['port'] = self.url.port
+        if self.url.username:
+            args['username'] = self.url.username
+        if self.url.password:
+            args['password'] = self.url.password
+
+        self.con.connect( self.url.hostname, **args )
 
         # Ensure base dir exists
         sftp = self.con.open_sftp()
