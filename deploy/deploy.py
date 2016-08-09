@@ -226,12 +226,12 @@ def lessc( f, *a, **kw ):
 
     return p.r
 
-def uglifyjs( file_paths ):
+def uglifyjs( file_paths, *a, **kw ):
     print 'B', ' + '.join( file_paths )
     p = pipe( '' )
 
     def run():
-        sh.uglifyjs( file_paths, _out = p.w )
+        sh.uglifyjs( file_paths, *a, _out = p.w, **kw )
         p.w.close()
 
     threading.Thread( target = run ).start()
