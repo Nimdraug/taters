@@ -150,7 +150,7 @@ class ftp( remote ):
             p.need_data.wait()
             try:
                 self.con.cwd( self._remote_path( p ) )
-                self.con.retrbinary( 'RETR %s' % os.path.basename( path ), p.w.write )
+                self._retry( self.con.retrbinary, 'RETR %s' % os.path.basename( path ), p.w.write )
             except Exception as e:
                 p.w.write( e )
 
@@ -173,7 +173,7 @@ class ftp( remote ):
                 self.con.cwd( fpath )
 
         print '%s:%s' % ( self.url.hostname, f.name )
-        self.con.storbinary( 'STOR %s' % os.path.basename( f.name ), f )
+        self._retry( self.con.storbinary, 'STOR %s' % os.path.basename( f.name ), f )
 
     def rm( self, f ):
         print 'R', f.name
