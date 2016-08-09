@@ -85,9 +85,11 @@ class BadPassiveFTP( ftplib.FTP ):
         return socket.gethostbyname( self.host ), port
 
 class ftp( remote ):
-    def __init__( self, url, bad_passive_server = False ):
+    def __init__( self, url, bad_passive_server = False, timeout = socket._GLOBAL_DEFAULT_TIMEOUT, retries = 3 ):
         super( ftp, self ).__init__( url )
         self.bad_passive_server = bad_passive_server
+        self.timeout = timeout
+        self.retries = retries
 
     def connect( self ):
         print 'C', urlparse.urlunparse( self.url )
