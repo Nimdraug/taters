@@ -178,6 +178,7 @@ class pipe:
         self.delete = False
 
     def rename( self, name ):
+        print '>', name
         self.name = name
 
         return self
