@@ -214,6 +214,7 @@ def uppercase( f ):
     return p.r
 
 def lessc( f, *a, **kw ):
+    print 'B', f.name
     p = pipe( f.name )
 
     def run():
@@ -225,6 +226,7 @@ def lessc( f, *a, **kw ):
     return p.r
 
 def uglifyjs( file_paths ):
+    print 'B', ' + '.join( file_paths )
     p = pipe( '' )
 
     def run():
