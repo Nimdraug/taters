@@ -128,6 +128,20 @@ class ftp( remote ):
             for f in self.source( rel_path, recursive ):
                 yield f
 
+    def _retry( self, func, *a, **kw ):
+        for t in range( self.retries ):
+            try:
+                func( *a, **kw )
+            except socket.timeout:
+                if t < self.retries:
+                    print 'Timedout! Retrying (%s of %s)' % ( t + 1, self.retries - 1 )
+                    continue
+                else:
+                    print 'Timedout! Out of retries!'
+                    raise
+            else:
+                break
+
     def get( self, path ):
         print 'G', path
         p = pipe( path )
