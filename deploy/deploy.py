@@ -219,7 +219,7 @@ def lessc( f, *a, **kw ):
     p = pipe( f.name )
 
     def run():
-        sh.lessc( '-', *a, _in = f, _out = p.w.write, **kw )
+        sh.lessc( '-', *a, _in = f, _out = p.w, **kw )
         p.w.close()
 
     threading.Thread( target = run ).start()
@@ -231,7 +231,7 @@ def uglifyjs( file_paths ):
     p = pipe( '' )
 
     def run():
-        sh.uglifyjs( file_paths, _out = p.w.write )
+        sh.uglifyjs( file_paths, _out = p.w )
         p.w.close()
 
     threading.Thread( target = run ).start()
