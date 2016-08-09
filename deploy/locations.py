@@ -94,9 +94,9 @@ class ftp( remote ):
     def connect( self ):
         print 'C', urlparse.urlunparse( self.url )
         if self.bad_passive_server:
-            self.con = ftplib.FTP()
+            self.con = ftplib.FTP( timeout = self.timeout )
         else:
-            self.con = BadPassiveFTP()
+            self.con = BadPassiveFTP( timeout = self.timeout )
 
         self.con.connect( self.url.hostname, self.url.port )
         self.con.login( urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
