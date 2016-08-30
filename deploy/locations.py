@@ -324,10 +324,14 @@ class ssh( remote ):
 class git( local ):
     def __init__( self, url = '' ):
         super( git, self ).__init__( url )
-        if self.url.path:
-            self.git = sh.git.bake( '-C', self.url.path )
+
+    def git( self, base_path = '' ):
+        path = os.path.join( self.url.path, base_path )
+
+        if path:
+            return sh.git.bake( '-C', path )
         else:
-            self.git = sh.git
+            return sh.git
 
     def get_ref_commit( self, ref = 'HEAD' ):
         return str( self.git( 'rev-parse', ref ) ).strip()
