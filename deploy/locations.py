@@ -330,18 +330,18 @@ class git( local ):
             self.git = sh.git
 
     def get_ref_commit( self, ref = 'HEAD' ):
-        return str( sh.git( 'rev-parse', ref ) ).strip()
+        return str( self.git( 'rev-parse', ref ) ).strip()
 
     def source( self, from_commit = None, to_commit = None ):
         if from_commit is not None:
             if to_commit is not None:
-                files = sh.git.diff( '--name-status', '--no-renames', '--color=never', from_commit, to_commit, _iter = True, _tty_out = False )
+                files = self.git.diff( '--name-status', '--no-renames', '--color=never', from_commit, to_commit, _iter = True, _tty_out = False )
             else:
-                files = sh.git.diff( '--name-status', '--no-renames', '--color=never', from_commit, _iter = True, _tty_out = False )
+                files = self.git.diff( '--name-status', '--no-renames', '--color=never', from_commit, _iter = True, _tty_out = False )
 
             all_files = False
         else:
-            files = sh.git( "ls-files", _iter = True, _tty_out = False )
+            files = self.git( "ls-files", _iter = True, _tty_out = False )
             all_files = True
 
         for l in files:
