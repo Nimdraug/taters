@@ -332,26 +332,23 @@ class git( local ):
     def get_ref_commit( self, ref = 'HEAD' ):
         return str( self.git( 'rev-parse', ref ) ).strip()
 
-    def source( self, from_commit = None, to_commit = None ):
-        if from_commit is not None:
-            if to_commit is not None:
-                files = self.git.diff( '--name-status', '--no-renames', '--color=never', from_commit, to_commit, _iter = True, _tty_out = False )
-            else:
-                files = self.git.diff( '--name-status', '--no-renames', '--color=never', from_commit, _iter = True, _tty_out = False )
+    def source( self, from_commit = None, to_commit = 'HEAD', recursive = False ):
+        if from_commit is None:
+            def get_all_files():
+                for f in self.git( "ls-files", _iter = True, _tty_out = False ):
+                    yield 'A', f.strip()
 
-            all_files = False
+            files = get_all_files()
         else:
-            files = self.git( "ls-files", _iter = True, _tty_out = False )
-            all_files = True
+            def get_changed_files():
+                for f in self.git.diff( '--name-status', '--no-renames', '--color=never', from_commit, to_commit, _iter = True, _tty_out = False ):
+                    yield f.strip().split( '\t' )
 
-        for l in files:
-            mode = 'A'
-            if not all_files:
-                mode, fname = l.strip().split( '\t' )
-            else:
-                fname = l.strip()
+            files = get_changed_files()
 
+        for mode, fname in files:
             f = lazy_file( fname )
+
             if mode == 'D':
                 f.delete = True
 
