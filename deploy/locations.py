@@ -337,15 +337,17 @@ class git( local ):
         return str( self.git( base_path )( 'rev-parse', ref ) ).strip()
 
     def source( self, from_commit = None, to_commit = 'HEAD', recursive = False ):
+        git = self.git()
+
         if from_commit is None:
             def get_all_files():
-                for f in self.git( "ls-files", _iter = True, _tty_out = False ):
+                for f in git( "ls-files", _iter = True, _tty_out = False ):
                     yield 'A', f.strip()
 
             files = get_all_files()
         else:
             def get_changed_files():
-                for f in self.git.diff( '--name-status', '--no-renames', '--color=never', from_commit, to_commit, _iter = True, _tty_out = False ):
+                for f in git.diff( '--name-status', '--no-renames', '--color=never', from_commit, to_commit, _iter = True, _tty_out = False ):
                     yield f.strip().split( '\t' )
 
             files = get_changed_files()
