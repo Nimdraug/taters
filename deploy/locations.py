@@ -336,8 +336,8 @@ class git( local ):
     def get_ref_commit( self, ref = 'HEAD', base_path = '' ):
         return str( self.git( base_path )( 'rev-parse', ref ) ).strip()
 
-    def source( self, from_commit = None, to_commit = 'HEAD', recursive = False ):
-        git = self.git()
+    def source( self, from_commit = None, to_commit = 'HEAD', base_path = '', recursive = False ):
+        git = self.git( base_path )
 
         if from_commit is None:
             def get_all_files():
