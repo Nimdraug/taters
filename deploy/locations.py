@@ -333,8 +333,8 @@ class git( local ):
         else:
             return sh.git
 
-    def get_ref_commit( self, ref = 'HEAD' ):
-        return str( self.git( 'rev-parse', ref ) ).strip()
+    def get_ref_commit( self, ref = 'HEAD', base_path = '' ):
+        return str( self.git( base_path )( 'rev-parse', ref ) ).strip()
 
     def source( self, from_commit = None, to_commit = 'HEAD', recursive = False ):
         if from_commit is None:
