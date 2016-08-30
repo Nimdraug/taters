@@ -353,6 +353,17 @@ class git( local ):
             files = get_changed_files()
 
         for mode, fname in files:
+            if recursive and os.path.isdir( os.path.join( self.url.path, base_path, fname ) ):
+                # Encountered a submodule in recursive mode
+                # Work out its from and to commits and yield the changed files
+                sub_from = git( 'ls-tree', from_commit, fname ).split()[2] if from_commit else None
+                sub_to = git( 'ls-tree', to_commit, fname ).split()[2]
+
+                for f in self.source( sub_from, sub_to, os.path.join( base_path, fname ), recursive ):
+                    yield f
+
+                continue
+
             f = lazy_file( fname )
 
             if mode == 'D':
