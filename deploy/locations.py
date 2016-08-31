@@ -344,7 +344,7 @@ class git( local ):
 
         if from_commit is None:
             def get_all_files():
-                for f in git( "ls-tree", "--name-only", to_commit, _iter = True, _tty_out = False ):
+                for f in git( "ls-tree", "--name-only", '-r', to_commit, _iter = True, _tty_out = False ):
                     yield 'A', f.strip()
 
             files = get_all_files()
