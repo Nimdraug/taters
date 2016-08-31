@@ -370,7 +370,7 @@ class git( local ):
 
                 continue
 
-            f = lazy_file( fname )
+            f = lazy_file( os.path.join( self.url.path, base_path, fname ) )
 
             if mode == 'D':
                 f.delete = True
