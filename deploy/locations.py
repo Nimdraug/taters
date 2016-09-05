@@ -339,18 +339,19 @@ class git( local ):
     def source( self, from_commit = None, to_commit = None, base_path = '', recursive = False ):
         git = self.git( base_path )
 
-        if to_commit is None:
-            to_commit = 'HEAD'
-
         if from_commit is None:
             def get_all_files():
-                for f in git( "ls-tree", "--name-only", '-r', to_commit, _iter = True, _tty_out = False ):
+                for f in git( "ls-tree", "--name-only", '-r', to_commit or 'HEAD', _iter = True, _tty_out = False ):
                     yield 'A', f.strip()
 
             files = get_all_files()
         else:
             def get_changed_files():
-                for f in git.diff( '--name-status', '--no-renames', '--color=never', from_commit, to_commit, _iter = True, _tty_out = False ):
+                args = [ '--name-status', '--no-renames', '--color=never', from_commit ]
+                if to_commit:
+                    args.append( to_commit )
+
+                for f in git.diff( *args, _iter = True, _tty_out = False ):
                     yield f.strip().split( '\t' )
 
             files = get_changed_files()
