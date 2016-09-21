@@ -364,7 +364,7 @@ class git( local ):
                 sub_from = git( 'ls-tree', from_commit, fname ) if from_commit else None
                 sub_from = sub_from.split()[2] if sub_from else None
 
-                sub_to = git( 'ls-tree', to_commit, fname ).split()[2]
+                sub_to = git( 'ls-tree', to_commit, fname ).split()[2] if to_commit else None
 
                 for f in self.source( sub_from, sub_to, os.path.join( base_path, fname ), recursive ):
                     yield f
