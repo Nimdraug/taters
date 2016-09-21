@@ -357,7 +357,7 @@ class git( local ):
             files = get_changed_files()
 
         for mode, fname in files:
-            if recursive and os.path.isdir( os.path.join( self.url.path, base_path, fname ) ):
+            if mode != 'D' and recursive and os.path.isdir( os.path.join( self.url.path, base_path, fname ) ):
                 # Encountered a submodule in recursive mode
                 # Work out its from and to commits and yield the changed files
 
