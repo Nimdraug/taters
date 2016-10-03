@@ -361,6 +361,9 @@ class git( local ):
                 # Encountered a submodule in recursive mode
                 # Work out its from and to commits and yield the changed files
 
+                if not os.path.exists( os.path.join( self.url.path, base_path, fname, '.git' ) ):
+                    raise Exception, 'Submodule %s not checked out!' % os.path.join( base_path, fname )
+
                 sub_from = git( 'ls-tree', from_commit, fname ) if from_commit else None
                 sub_from = sub_from.split()[2] if sub_from else None
 
