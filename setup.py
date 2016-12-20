@@ -9,5 +9,9 @@ setup(
     maintainer_email = 'martin@designondemand.com.au',
     description = 'A fully modular build and deployment framework',
     
-    packages = [ 'deploy' ]
+    packages = [ 'deploy' ],
+    install_requires = [
+        'paramiko',
+        'sh'
+    ]
 )
