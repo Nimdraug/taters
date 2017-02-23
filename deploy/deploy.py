@@ -42,6 +42,24 @@ def read_all( f, chunk_size = None ):
         else:
             return ret
 
+def tee( f ):
+    p1 = pipe( f.name )
+    p2 = pipe( f.name )
+
+    def run():
+        def write( chunk ):
+            p1.w.write( chunk )
+            p2.w.write( chunk )
+
+        read_all_to( f, write )
+
+        p1.w.close()
+        p2.w.close()
+
+    threading.Thread( target = run ).start()
+
+    return p1.r, p2.r
+
 class lazy_file( object ):
     def __init__( self, name, *a, **kw ):
         self.name = name
