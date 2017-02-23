@@ -205,7 +205,7 @@ class ftp( remote ):
         for p in path.split( os.sep ):
             if not last_existed or p not in self.con.nlst():
                 print '+D', p
-                self.con.mkd( p )
+                self._retry( self.con.mkd, p )
                 last_existed = False
             self.con.cwd( p )
 
