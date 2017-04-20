@@ -146,6 +146,11 @@ class ftp( remote ):
                 break
 
     def exists( self, path ):
+        if not self.con:
+            self.connect()
+
+        cur_path = os.path.join( self.url.path, path )
+
         return self.con.size( path )
 
     def get( self, path ):
