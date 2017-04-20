@@ -42,7 +42,7 @@ class local( location ):
     def _overwrite( self, overwrite, f, path ):
         return overwrite( f, path ) if callable( overwrite ) else overwrite
 
-    def destination( self, files ):
+    def destination( self, files, overwrite = False ):
         for f in files:
             dfn = os.path.join( self.url.path, f.name )
 
@@ -51,7 +51,7 @@ class local( location ):
             if not os.path.exists( dpath ):
                 os.makedirs( dpath )
 
-            if not f.delete:
+            if not f.delete and ( not os.path.exists( dfn ) or self._overwrite( overwrite, f, dfn ) ):
                 print 'local:%s' % dfn
                 with open( dfn, 'wb' ) as dest:
                     read_all_to( f, dest.write )
