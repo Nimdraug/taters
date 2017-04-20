@@ -19,7 +19,10 @@ class location( object ):
     def source( self ):
         pass
 
-    def destination( self, files ):
+    def _overwrite( self, overwrite, f, path ):
+        return overwrite( f, path ) if callable( overwrite ) else overwrite
+
+    def destination( self, files, overwrite = False ):
         pass
 
 class local( location ):
@@ -38,9 +41,6 @@ class local( location ):
             elif os.path.isdir( full_path ) and recursive:
                 for f in self.source( rel_path, True ):
                     yield f
-
-    def _overwrite( self, overwrite, f, path ):
-        return overwrite( f, path ) if callable( overwrite ) else overwrite
 
     def destination( self, files, overwrite = False ):
         for f in files:
