@@ -71,14 +71,14 @@ class remote( location ):
     def connect( self ):
         pass
 
-    def destination( self, files ):
+    def destination( self, files, overwrite = False ):
         for f in files:
             if not self.con:
                 self.connect()
 
             if f.delete:
                 self.rm( f )
-            else:
+            elif not self.exists( f ) or self._overwrite( overwrite, f, f.name ):
                 self.put( f )
 
 class BadPassiveFTP( ftplib.FTP ):
