@@ -1,4 +1,5 @@
 from taters import lazy_file, pipe, read_all_to
+import errno
 import ftplib
 import os
 import paramiko
@@ -263,6 +264,22 @@ class ssh( remote ):
                     yield f
             else:
                 yield self.get( full_path ).rename( rel_path )
+
+    def exists( self, path ):
+        if not self.con:
+            self.connect()
+
+        sftp = self.con.open_sftp()
+
+        try:
+            sftp.chdir( self.url.path )
+            sftp.stat( path )
+        except IOError, e:
+            if e.errno == errno.ENOENT:
+                return False
+            raise
+        else:
+            return True
 
     def get( self, path ):
         print 'G', path
