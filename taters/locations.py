@@ -39,6 +39,9 @@ class local( location ):
                 for f in self.source( rel_path, True ):
                     yield f
 
+    def _overwrite( self, overwrite, f, path ):
+        return overwrite( f, path ) if callable( overwrite ) else overwrite
+
     def destination( self, files ):
         for f in files:
             dfn = os.path.join( self.url.path, f.name )
