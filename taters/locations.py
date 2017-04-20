@@ -145,6 +145,9 @@ class ftp( remote ):
             else:
                 break
 
+    def exists( self, path ):
+        return self.con.size( path )
+
     def get( self, path ):
         print 'G', path
         p = pipe( path )
