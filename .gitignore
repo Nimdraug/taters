@@ -1,4 +1,4 @@
 *.pyc
 build/
-deploy.egg-info/
+*.egg-info/
 dist/

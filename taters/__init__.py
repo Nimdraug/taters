@@ -1,4 +1,4 @@
-from deploy import *
+from taters import *
 import locations
 
 from pkgutil import extend_path

@@ -1,4 +1,4 @@
-from deploy import lazy_file, pipe, read_all_to
+from taters import lazy_file, pipe, read_all_to
 import ftplib
 import os
 import paramiko
