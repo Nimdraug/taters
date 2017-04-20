@@ -52,7 +52,7 @@ class local( location ):
             if not os.path.exists( dpath ):
                 os.makedirs( dpath )
 
-            if not f.delete and ( not os.path.exists( dfn ) or self._overwrite( overwrite, f, dfn ) ):
+            if not f.delete and ( overwrite == True or not os.path.exists( dfn ) or self._overwrite( overwrite, f, dfn ) ):
                 print 'local:%s' % dfn
                 with open( dfn, 'wb' ) as dest:
                     read_all_to( f, dest.write )
@@ -79,7 +79,7 @@ class remote( location ):
 
             if f.delete:
                 self.rm( f )
-            elif not self.exists( f ) or self._overwrite( overwrite, f, f.name ):
+            elif overwrite == True or not self.exists( f ) or self._overwrite( overwrite, f, f.name ):
                 self.put( f )
 
 class BadPassiveFTP( ftplib.FTP ):
