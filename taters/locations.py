@@ -151,7 +151,12 @@ class ftp( remote ):
 
         cur_path = os.path.join( self.url.path, path )
 
-        return self.con.size( path )
+        try:
+            self.con.size( cur_path )
+        except:
+            return False
+
+        return True
 
     def get( self, path ):
         print 'G', path
