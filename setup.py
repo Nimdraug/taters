@@ -33,7 +33,7 @@ setup(
         'Topic :: System :: Archiving',
         'Topic :: System :: Installation/Setup',
         'Topic :: Utilities',
-    ]
+    ],
 
     keywords = 'webdev build deployment ftp ssh less javascript',
 
