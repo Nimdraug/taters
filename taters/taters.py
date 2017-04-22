@@ -11,10 +11,11 @@ def null_dest( files ):
 def debug_dest( files ):
     for f in files:
         print f.name
-        if hasattr( f, 'mode' ):
-            print 'Mode: ', f.mode
         print '-' * len( f.name )
-        print f.read()
+        if not f.delete:
+            print f.read()
+        else:
+            print '* DELETE *'
         print
 
 def debug_filter( files ):
