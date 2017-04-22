@@ -201,12 +201,6 @@ class pipe:
 
         return self
 
-def dest_select( files, targets ):
-    if len( sys.argv ) > 1:
-        return getattr( targets, sys.argv[1] )( files )
-    else:
-        return targets.default( files )
-
 def uppercase( f ):
     p = pipe( f.name )
 
