@@ -12,6 +12,8 @@ import stat
 import threading
 
 class location( object ):
+    '''Base Location'''
+
     def __init__( self, url ):
         if isinstance( url, basestring ):
             url = urlparse.urlparse( url )
@@ -27,6 +29,10 @@ class location( object ):
         pass
 
 class local( location ):
+    '''Local Location
+
+    Represents a location on your local filesystem'''
+
     def __init__( self, url = '.' ):
         super( local, self ).__init__( url )
 
@@ -64,6 +70,8 @@ class local( location ):
                     read_all_to( f, dest.write )
 
 class remote( location ):
+    '''Base Remote Location'''
+
     def __init__( self, url ):
         super( remote, self ).__init__( url )
 
@@ -83,12 +91,18 @@ class remote( location ):
                 self.put( f )
 
 class BadPassiveFTP( ftplib.FTP ):
+    '''Use this instead of ftplib.FTP if the ftp server requires passive mode'''
+
     def makepasv(self):
         host, port = ftplib.FTP.makepasv( self )
 
         return socket.gethostbyname( self.host ), port
 
 class ftp( remote ):
+    '''FTP Location
+
+    Represents a location on an FTP server'''
+
     def __init__( self, url, bad_passive_server = False, timeout = socket._GLOBAL_DEFAULT_TIMEOUT, retries = 3 ):
         super( ftp, self ).__init__( url )
         self.bad_passive_server = bad_passive_server
@@ -227,6 +241,10 @@ class ftp( remote ):
             self.con.cwd( p )
 
 class ssh( remote ):
+    '''SSH Location
+
+    Represents a location on an SSH server'''
+
     def connect( self ):
         print 'C', urlparse.urlunparse( self.url )
         self.con = paramiko.SSHClient()
@@ -355,6 +373,10 @@ class ssh( remote ):
             sftp.mkdir( cur_path )
 
 class git( local ):
+    '''GIT Location
+
+    Represents a local git repository. Allows you to limit the files given in the source to files that where changed between two git revisions'''
+
     def __init__( self, url = '' ):
         super( git, self ).__init__( url )
 
@@ -415,6 +437,12 @@ class git( local ):
             yield f
 
 class tar( location ):
+    '''Tar file Location
+
+    Represents the files inside a tar archive as a location, allowing files to be extracted or zipped up.
+
+    TODO: Fix me!'''
+
     def __init__( self, f ):
         self.f = f
 
@@ -434,6 +462,11 @@ class tar( location ):
             tar.addfile( tarinfo, f )
 
 class zip( location ):
+    '''Zip file Location
+
+    Represents the files inside a zip archive as a location, allowing files to be extracted or zipped up.
+
+    TODO: Implement me!'''
     # Use zip
     # https://docs.python.org/2/library/zip.html
     pass

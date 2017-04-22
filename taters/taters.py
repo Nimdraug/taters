@@ -5,10 +5,18 @@ import sys
 import threading
 
 def null_dest( files ):
+    '''Null destination
+
+    Iterates through the given source and does nothing with the resulting files'''
+
     for f in files:
         pass
 
 def debug_dest( files ):
+    '''Debug destination
+
+    Outputs the name and data of each file from the given source'''
+
     for f in files:
         print f.name
         print '-' * len( f.name )
@@ -19,12 +27,18 @@ def debug_dest( files ):
         print
 
 def debug_filter( files ):
+    '''Debug filter
+
+    Outputs the name of each of the files from the given source'''
+
     for f in files:
         print '+', f.name
 
         yield f
 
 def read_all_to( f, to, chunk_size = None ):
+    '''Reads all the data from the given file and passes each chunk to the given callback function'''
+
     while True:
         chunk = f.read( *( [ chunk_size ] if chunk_size else [] ) )
 
@@ -34,6 +48,8 @@ def read_all_to( f, to, chunk_size = None ):
             break
 
 def read_all( f, chunk_size = None ):
+    '''Reads and returns all data from the given file'''
+
     ret = ''
     while True:
         chunk = f.read( *( [ chunk_size ] if chunk_size else [] ) )
@@ -44,6 +60,9 @@ def read_all( f, chunk_size = None ):
             return ret
 
 def tee( f ):
+    '''Takes a file and returns two pipes that both give the files data'''
+
+
     p1 = pipe( f.name )
     p2 = pipe( f.name )
 
@@ -62,6 +81,10 @@ def tee( f ):
     return p1.r, p2.r
 
 class lazy_file( object ):
+    '''Lazy file
+
+    A file-like object which only gets opened when it is required (at read or write for instance).'''
+
     def __init__( self, name, *a, **kw ):
         self.name = name
         self._name = name
@@ -108,6 +131,12 @@ class lazy_file( object ):
         return self
 
 class pipe:
+    '''Pipe
+
+    A thread-safe pipe object which allows data to be transferred between threads.
+    It provides two file-like endpoints for reading and writing with blocking when
+    no data is available or when the pipe is full.'''
+
     class _reader( object ):
         def __init__( self, pipe ):
             self.pipe = pipe
@@ -203,6 +232,10 @@ class pipe:
         return self
 
 def uppercase( f ):
+    '''Uppercase Builder
+
+    Takes a file and returns its data in uppercase'''
+
     p = pipe( f.name )
 
     def run():
@@ -214,6 +247,11 @@ def uppercase( f ):
     return p.r
 
 def lessc( f, *a, **kw ):
+    '''less Builder
+
+    Takes a less file and runs it through the lessc compiler and returns the resulting css file.
+    Any arguments passed to the function will be passed straight to the sh command'''
+
     print 'B', f.name
     p = pipe( f.name )
 
@@ -226,6 +264,11 @@ def lessc( f, *a, **kw ):
     return p.r
 
 def uglifyjs( file_paths, *a, **kw ):
+    '''JavaScript Builder
+
+    Takes a js file and runs it through the uglifyjs compiler and returns the resulting css file
+    Any arguments passed to the function will be passed straight to the sh command'''
+
     print 'B', ' + '.join( file_paths )
     p = pipe( '' )
 
