@@ -17,7 +17,7 @@ def debug_dest( files ):
         print f.read()
         print
 
-def debug_pipe( files ):
+def debug_filter( files ):
     for f in files:
         print '+', f.name
 
