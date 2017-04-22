@@ -52,16 +52,16 @@ class local( location ):
             if not os.path.exists( dpath ):
                 os.makedirs( dpath )
 
-            if not f.delete and ( overwrite == True or not os.path.exists( dfn ) or self._overwrite( overwrite, f, dfn ) ):
-                print 'local:%s' % dfn
-                with open( dfn, 'wb' ) as dest:
-                    read_all_to( f, dest.write )
-            else:
+            if f.delete:
                 print 'local DELETE', dfn
                 try:
                     os.remove( dfn )
                 except OSError:
                     pass
+            elif overwrite == True or not os.path.exists( dfn ) or self._overwrite( overwrite, f, dfn ):
+                print 'local:%s' % dfn
+                with open( dfn, 'wb' ) as dest:
+                    read_all_to( f, dest.write )
 
 class remote( location ):
     def __init__( self, url ):
