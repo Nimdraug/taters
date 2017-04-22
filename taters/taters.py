@@ -201,20 +201,6 @@ class pipe:
 
         return self
 
-def example_splitter( files ):
-    for f in files:
-        if f.delete:
-            yield f
-
-        if f.name in [ __file__, 'targets.py' ] or f.name.endswith( '.pyc' ):
-            pass
-        elif f.name.endswith( '.txt' ):
-            yield uppercase( f )
-        elif f.name.endswith( '.less' ):
-            yield lessc( f ).rename( f.name.replace( '.less', '.css' ) )
-        else:
-            yield f
-
 def dest_select( files, targets ):
     if len( sys.argv ) > 1:
         return getattr( targets, sys.argv[1] )( files )
