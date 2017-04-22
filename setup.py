@@ -35,7 +35,7 @@ setup(
         'Topic :: Utilities',
     ]
 
-    keywords = 'webdev build deployment ftp ssh less javascript'
+    keywords = 'webdev build deployment ftp ssh less javascript',
 
     packages = [ 'taters' ],
 
