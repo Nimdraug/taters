@@ -266,7 +266,7 @@ def lessc( f, *a, **kw ):
 def uglifyjs( file_paths, *a, **kw ):
     '''JavaScript Builder
 
-    Takes a js file and runs it through the uglifyjs compiler and returns the resulting css file
+    Takes a list of js filenames and passes them to the uglifyjs compiler and returns the resulting css file
     Any arguments passed to the function will be passed straight to the sh command'''
 
     print 'B', ' + '.join( file_paths )
