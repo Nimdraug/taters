@@ -19,6 +19,12 @@ class location( object ):
             url = urlparse.urlparse( url )
         self.url = url
 
+
+    def sub_location( self, path ):
+        url = os.path.join( urlparse.urlunparse( self.url ), path )
+
+        return self.__class__( url )
+
     def source( self ):
         pass
 
@@ -76,6 +82,12 @@ class remote( location ):
         super( remote, self ).__init__( url )
 
         self.con = None
+
+    def sub_location( self, path ):
+        loc = super( remote, self ).sub_location( path )
+        loc.con = self.con
+
+        return loc
 
     def connect( self ):
         pass
