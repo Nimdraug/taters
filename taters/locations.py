@@ -99,7 +99,7 @@ class remote( location ):
 
             if f.delete:
                 self.rm( f )
-            elif overwrite == True or not self.exists( f ) or self._overwrite( overwrite, f, f.name ):
+            elif overwrite == True or not self.exists( f.name ) or self._overwrite( overwrite, f, f.name ):
                 self.put( f )
 
 class BadPassiveFTP( ftplib.FTP ):
