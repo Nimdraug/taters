@@ -1,11 +1,11 @@
 from taters import lazy_file, pipe, read_all_to
 import errno
 import ftplib
+import furl
 import os
 import paramiko
 import tarfile
 import urllib
-import urlparse
 import sh
 import socket
 import stat
@@ -16,12 +16,12 @@ class location( object ):
 
     def __init__( self, url ):
         if isinstance( url, basestring ):
-            url = urlparse.urlparse( url )
+            url = furl.furl( url )
         self.url = url
 
 
     def sub_location( self, path ):
-        url = os.path.join( urlparse.urlunparse( self.url ), path )
+        url = self.url.join( path )
 
         return self.__class__( url )
 
@@ -122,7 +122,7 @@ class ftp( remote ):
         self.retries = retries
 
     def connect( self ):
-        print 'C', urlparse.urlunparse( self.url )
+        print 'C', self.url.url
         if self.bad_passive_server:
             self.con = ftplib.FTP( timeout = self.timeout )
         else:
@@ -272,7 +272,7 @@ class ssh( remote ):
     Represents a location on an SSH server'''
 
     def connect( self ):
-        print 'C', urlparse.urlunparse( self.url )
+        print 'C', self.url.url
         self.con = paramiko.SSHClient()
         self.con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
 
