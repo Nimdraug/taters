@@ -35,7 +35,7 @@ class location( object ):
     def isdir( self, path ):
         raise NotImplemented
 
-    def open( self, path ):
+    def open( self, path, *a, **kw ):
         raise NotImplemented
 
     def stat( self, path ):
