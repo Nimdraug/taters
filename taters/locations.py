@@ -23,7 +23,6 @@ class location( object ):
             url = furl.furl( url )
         self.url = url
 
-
     def sub_location( self, path ):
         url = self.url.join( path )
 
