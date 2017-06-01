@@ -11,6 +11,10 @@ import socket
 import stat
 import threading
 
+def _decode_furl_path( path ):
+    '''decodes furl.Path to unicode string'''
+    return urllib.unquote( str( path ) ).decode( 'utf8' )
+
 class location( object ):
     '''Base Location'''
 
