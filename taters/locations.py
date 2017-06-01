@@ -29,6 +29,30 @@ class location( object ):
 
         return self.__class__( url )
 
+    def listdir( self, path ):
+        raise NotImplemented
+
+    def isdir( self, path ):
+        raise NotImplemented
+
+    def open( self, path ):
+        raise NotImplemented
+
+    def stat( self, path ):
+        raise NotImplemented
+
+    def exists( self, path ):
+        raise NotImplemented
+
+    def get( self, path ):
+        raise NotImplemented
+
+    def put( self, f ):
+        raise NotImplemented
+
+    def rm( self, f ):
+        raise NotImplemented
+
     def source( self ):
         pass
 
