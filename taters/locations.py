@@ -100,10 +100,12 @@ class local( location ):
         return f
 
     def put( self, f ):
+        print 'local:%s' % f.name
         with open( self._full_path( f.name ), 'wb' ) as dest:
             read_all_to( f, dest.write )
 
     def rm( self, f ):
+        print 'local DELETE', f.name
         try:
             os.remove( self._full_path( f.name ) )
         except OSError:
@@ -129,10 +131,8 @@ class local( location ):
                 self.mkdirs( dirpath )
 
             if f.delete:
-                print 'local DELETE', full_path
                 self.rm( f )
             elif overwrite == True or not self.exists( f.name ) or self._overwrite( overwrite, f ):
-                print 'local:%s' % full_path
                 self.put( f )
 
 class remote( location ):
