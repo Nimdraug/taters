@@ -77,7 +77,7 @@ class local( location ):
 
     def _listdir( self ):
         for path in os.listdir( _decode_furl_path( self.url.path ) ):
-            return path
+            yield path
 
     def isdir( self, path ):
         return os.path.isdir( self._full_path( path ) )
