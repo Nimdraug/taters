@@ -61,8 +61,8 @@ class location( object ):
     def source( self ):
         raise NotImplemented
 
-    def _overwrite( self, overwrite, f, path ):
-        return overwrite( f, path ) if callable( overwrite ) else overwrite
+    def _overwrite( self, overwrite, f ):
+        return overwrite( self, f ) if callable( overwrite ) else overwrite
 
     def destination( self, files, overwrite = False ):
         raise NotImplemented
