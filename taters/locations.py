@@ -103,18 +103,14 @@ class local( location ):
         except OSError:
             pass
 
-    def source( self, base_path = '', recursive = False ):
-        cur_path = os.path.join( self.url.path, base_path )
-
-        for path in os.listdir( cur_path ):
-            rel_path = os.path.join( base_path, path )
-            full_path = os.path.join( cur_path, path )
-
-            if os.path.isfile( full_path ):
-                yield lazy_file( full_path ).rename( rel_path )
-            elif os.path.isdir( full_path ) and recursive:
-                for f in self.source( rel_path, True ):
+    def source( self, recursive = False ):
+        for path in self._listdir():
+            if self.isdir( path ) and recursive:
+                for f in self.sub_location( path ).source( True ):
+                    f.name = os.path.join( path, f.name )
                     yield f
+            else:
+                yield self.get( path )
 
     def destination( self, files, overwrite = False ):
         for f in files:
