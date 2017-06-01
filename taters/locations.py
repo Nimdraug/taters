@@ -54,13 +54,13 @@ class location( object ):
         raise NotImplemented
 
     def source( self ):
-        pass
+        raise NotImplemented
 
     def _overwrite( self, overwrite, f, path ):
         return overwrite( f, path ) if callable( overwrite ) else overwrite
 
     def destination( self, files, overwrite = False ):
-        pass
+        raise NotImplemented
 
 class local( location ):
     '''Local Location
