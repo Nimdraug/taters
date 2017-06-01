@@ -120,23 +120,19 @@ class local( location ):
 
     def destination( self, files, overwrite = False ):
         for f in files:
-            dfn = os.path.join( self.url.path, f.name )
+            full_path = self._full_path( f.name )
 
             # Ensure dest paths exist
-            dpath = os.path.dirname( dfn )
-            if not os.path.exists( dpath ):
-                os.makedirs( dpath )
+            dirpath = os.path.dirname( f.name )
+            if not self.exists( dirpath ):
+                self.mkdirs( dirpath )
 
             if f.delete:
-                print 'local DELETE', dfn
-                try:
-                    os.remove( dfn )
-                except OSError:
-                    pass
-            elif overwrite == True or not os.path.exists( dfn ) or self._overwrite( overwrite, f, dfn ):
-                print 'local:%s' % dfn
-                with open( dfn, 'wb' ) as dest:
-                    read_all_to( f, dest.write )
+                print 'local DELETE', full_path
+                self.rm( f )
+            elif overwrite == True or not self.exists( f.name ) or self._overwrite( overwrite, f ):
+                print 'local:%s' % full_path
+                self.put( f )
 
 class remote( location ):
     '''Base Remote Location'''
