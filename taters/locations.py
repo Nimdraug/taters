@@ -88,6 +88,21 @@ class local( location ):
     def exists( self, path ):
         return os.path.exists( self._full_path( path ) )
 
+    def get( self, path ):
+        f = lazy_file( self._full_path( path ) )
+        f.name = path
+        return f
+
+    def put( self, f ):
+        with open( self._full_path( f.name ), 'wb' ) as dest:
+            read_all_to( f, dest.write )
+
+    def rm( self, f ):
+        try:
+            os.remove( self._full_path( f.name ) )
+        except OSError:
+            pass
+
     def source( self, base_path = '', recursive = False ):
         cur_path = os.path.join( self.url.path, base_path )
 
