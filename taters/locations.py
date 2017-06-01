@@ -82,6 +82,9 @@ class local( location ):
     def isdir( self, path ):
         return os.path.isdir( self._full_path( path ) )
 
+    def mkdirs( self, path ):
+        os.makedirs( path )
+
     def open( self, path, *a, **kw ):
         return open( self._full_path( path ), *a, **kw )
 
