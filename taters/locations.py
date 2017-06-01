@@ -37,6 +37,9 @@ class location( object ):
     def isdir( self, path ):
         raise NotImplemented
 
+    def mkdirs( self, path ):
+        raise NotImplemented
+
     def open( self, path, *a, **kw ):
         raise NotImplemented
 
