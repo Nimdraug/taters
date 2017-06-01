@@ -29,7 +29,7 @@ class location( object ):
 
         return self.__class__( url )
 
-    def listdir( self, path ):
+    def _listdir( self ):
         raise NotImplemented
 
     def isdir( self, path ):
