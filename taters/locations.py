@@ -111,10 +111,11 @@ class local( location ):
 
     def source( self, recursive = False ):
         for path in self._listdir():
-            if self.isdir( path ) and recursive:
-                for f in self.sub_location( path ).source( True ):
-                    f.name = os.path.join( path, f.name )
-                    yield f
+            if self.isdir( path ):
+                if recursive:
+                    for f in self.sub_location( path ).source( True ):
+                        f.name = os.path.join( path, f.name )
+                        yield f
             else:
                 yield self.get( path )
 
