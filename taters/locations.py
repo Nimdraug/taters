@@ -77,16 +77,16 @@ class local( location ):
             return path
 
     def isdir( self, path ):
-        return os.path.isdir( _decode_furl_path( self.url.join( path ).path ) )
+        return os.path.isdir( self._full_path( path ) )
 
     def open( self, path, *a, **kw ):
-        return open( _decode_furl_path( self.url.join( path ).path ), *a, **kw )
+        return open( self._full_path( path ), *a, **kw )
 
     def stat( self, path ):
-        return os.stat( _decode_furl_path( self.url.join( path ).path ) )
+        return os.stat( self._full_path( path ) )
 
     def exists( self, path ):
-        return os.path.exists( _decode_furl_path( self.url.join( path ).path ) )
+        return os.path.exists( self._full_path( path ) )
 
     def source( self, base_path = '', recursive = False ):
         cur_path = os.path.join( self.url.path, base_path )
