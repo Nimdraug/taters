@@ -123,8 +123,6 @@ class local( location ):
 
     def destination( self, files, overwrite = False ):
         for f in files:
-            full_path = self._full_path( f.name )
-
             # Ensure dest paths exist
             dirpath = os.path.dirname( f.name )
             if not self.exists( dirpath ):
