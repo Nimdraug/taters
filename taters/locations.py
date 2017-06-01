@@ -28,6 +28,9 @@ class location( object ):
 
         return self.__class__( url )
 
+    def _full_path( self, path ):
+        return _decode_furl_path( self.url.join( path ).path )
+
     def _listdir( self ):
         raise NotImplemented
 
