@@ -70,6 +70,22 @@ class local( location ):
     def __init__( self, url = '.' ):
         super( local, self ).__init__( url )
 
+    def _listdir( self ):
+        for path in os.listdir( _decode_furl_path( self.url.path ) ):
+            return path
+
+    def isdir( self, path ):
+        return os.path.isdir( _decode_furl_path( self.url.join( path ).path ) )
+
+    def open( self, path, *a, **kw ):
+        return open( _decode_furl_path( self.url.join( path ).path ), *a, **kw )
+
+    def stat( self, path ):
+        return os.stat( _decode_furl_path( self.url.join( path ).path ) )
+
+    def exists( self, path ):
+        return os.path.exists( _decode_furl_path( self.url.join( path ).path ) )
+
     def source( self, base_path = '', recursive = False ):
         cur_path = os.path.join( self.url.path, base_path )
 
