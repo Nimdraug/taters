@@ -192,6 +192,10 @@ class ftp( remote ):
     def _remote_path( self, f ):
         return os.path.join( self.url.path, os.path.dirname( f.name ) )
 
+    def _listdir( path ):
+        for path in self.con.nlst( self._full_path( path ) ):
+            yield path
+
     def isdir( self, path ):
         full_path = self._full_path( path )
 
