@@ -116,8 +116,7 @@ class local( location ):
             if self.isdir( path ):
                 if recursive:
                     for f in self.sub_location( path ).source( True ):
-                        f.name = os.path.join( path, f.name )
-                        yield f
+                        yield f.rename( os.path.join( path, f.name ) )
             else:
                 yield self.get( path )
 
