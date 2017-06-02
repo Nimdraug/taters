@@ -314,21 +314,26 @@ class ftp( remote ):
             print e
 
     def mkdirs( self, path ):
-        if path.startswith( '/' ):
-            path = path[1:]
+        if not self.con:
+            self.connect()
 
-        if not path:
+        full_path = self._full_path( path )
+
+        if full_path.startswith( '/' ):
+            full_path = full_path[1:]
+
+        if not full_path:
             return
 
         self.con.cwd( '/' )
 
         last_existed = True
-        for p in path.split( os.sep ):
-            if not last_existed or p not in self.con.nlst():
-                print '+D', p
-                self._retry( self.con.mkd, p )
+        for segment in full_path.split( os.sep ):
+            if not last_existed or segment not in self.con.nlst():
+                print '+D', segment
+                self._retry( self.con.mkd, segment )
                 last_existed = False
-            self.con.cwd( p )
+            self.con.cwd( segment )
 
 class ssh( remote ):
     '''SSH Location
