@@ -186,7 +186,7 @@ class ftp( remote ):
         else:
             self.con = BadPassiveFTP( timeout = self.timeout )
 
-        self.con.connect( self.url.hostname, self.url.port )
+        self.con.connect( self.url.host, self.url.port )
         self.con.login( urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
 
     def _remote_path( self, f ):
@@ -290,7 +290,7 @@ class ftp( remote ):
                 self.mkdirs( os.path.dirname( f.name ) )
                 self.con.cwd( dir_path )
 
-        print '%s:%s' % ( self.url.hostname, f.name )
+        print '%s:%s' % ( self.url.host, f.name )
         self._retry( self.con.storbinary, 'STOR %s' % os.path.basename( f.name ), f )
 
     def rm( self, f ):
@@ -307,7 +307,7 @@ class ftp( remote ):
             return
 
         try:
-            print '%s DELETE %s' % ( self.url.hostname, f.name )
+            print '%s DELETE %s' % ( self.url.host, f.name )
             self.con.delete( os.path.basename( f.name ) )
         except Exception, e:
             print 'FTP-ERROR: Could not delete', f.name
