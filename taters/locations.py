@@ -152,9 +152,6 @@ class remote( location ):
 
     def destination( self, files, overwrite = False ):
         for f in files:
-            if not self.con:
-                self.connect()
-
             if f.delete:
                 self.rm( f )
             elif overwrite == True or not self.exists( f.name ) or self._overwrite( overwrite, f ):
