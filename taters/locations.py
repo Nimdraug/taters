@@ -262,12 +262,13 @@ class ftp( remote ):
     def get( self, path ):
         print 'G', path
         p = pipe( path )
+        full_path = self._full_path( path )
 
         def run():
             p.need_data.wait()
             try:
-                self.con.cwd( self._remote_path( p ) )
-                self._retry( self.con.retrbinary, 'RETR %s' % os.path.basename( path ), p.w.write )
+                self.con.cwd( os.path.dirname( full_path ) )
+                self._retry( self.con.retrbinary, 'RETR %s' % os.path.basename( full_path ), p.w.write )
             except Exception as e:
                 p.w.write( e )
 
@@ -280,14 +281,14 @@ class ftp( remote ):
     def put( self, f ):
         print 'P', f.name
 
-        fpath = self._remote_path( f )
+        dir_path = os.path.dirname( self._full_path( f.name ) )
 
         try:
-            self.con.cwd( fpath )
+            self.con.cwd( dir_path )
         except ftplib.error_perm as e:
             if e.message.startswith( '550' ):
-                self.mkdirs( fpath )
-                self.con.cwd( fpath )
+                self.mkdirs( os.path.dirname( f.name ) )
+                self.con.cwd( dir_path )
 
         print '%s:%s' % ( self.url.hostname, f.name )
         self._retry( self.con.storbinary, 'STOR %s' % os.path.basename( f.name ), f )
