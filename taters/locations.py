@@ -192,11 +192,11 @@ class ftp( remote ):
     def _remote_path( self, f ):
         return os.path.join( self.url.path, os.path.dirname( f.name ) )
 
-    def _is_dir( self, path ):
-        cur_path = os.path.join( self.url.path, path )
+    def isdir( self, path ):
+        full_path = self._full_path( path )
 
         try:
-            self.con.cwd( cur_path )
+            self.con.cwd( full_path )
         except ftplib.error_perm, e:
             if e.message.endswith( 'Not a directory' ):
                 return False
