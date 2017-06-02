@@ -58,14 +58,24 @@ class location( object ):
     def rm( self, f ):
         raise NotImplemented
 
-    def source( self ):
-        raise NotImplemented
+    def source( self, recursive = False ):
+        for path in self._listdir():
+            if self.isdir( path ):
+                if recursive:
+                    for f in self.sub_location( path ).source( True ):
+                        yield f.rename( os.path.join( path, f.name ) )
+            else:
+                yield self.get( path )
 
     def _overwrite( self, overwrite, f ):
         return overwrite( self, f ) if callable( overwrite ) else overwrite
 
     def destination( self, files, overwrite = False ):
-        raise NotImplemented
+        for f in files:
+            if f.delete:
+                self.rm( f )
+            elif overwrite == True or not self.exists( f.name ) or self._overwrite( overwrite, f ):
+                self.put( f )
 
 class local( location ):
     '''Local Location
@@ -117,22 +127,6 @@ class local( location ):
         except OSError:
             pass
 
-    def source( self, recursive = False ):
-        for path in self._listdir():
-            if self.isdir( path ):
-                if recursive:
-                    for f in self.sub_location( path ).source( True ):
-                        yield f.rename( os.path.join( path, f.name ) )
-            else:
-                yield self.get( path )
-
-    def destination( self, files, overwrite = False ):
-        for f in files:
-            if f.delete:
-                self.rm( f )
-            elif overwrite == True or not self.exists( f.name ) or self._overwrite( overwrite, f ):
-                self.put( f )
-
 class remote( location ):
     '''Base Remote Location'''
 
@@ -149,13 +143,6 @@ class remote( location ):
 
     def connect( self ):
         pass
-
-    def destination( self, files, overwrite = False ):
-        for f in files:
-            if f.delete:
-                self.rm( f )
-            elif overwrite == True or not self.exists( f.name ) or self._overwrite( overwrite, f ):
-                self.put( f )
 
 class BadPassiveFTP( ftplib.FTP ):
     '''Use this instead of ftplib.FTP if the ftp server requires passive mode'''
@@ -213,15 +200,6 @@ class ftp( remote ):
             raise e
 
         return True
-
-    def source( self, recursive = False ):
-        for path in self._listdir():
-            if self.isdir( path ):
-                if recursive:
-                    for f in self.sub_location( path ).source( True ):
-                        yield f.rename( os.path.join( path, f.name ) )
-            else:
-                yield self.get( path )
 
     def _retry( self, func, *a, **kw ):
         for t in range( self.retries ):
