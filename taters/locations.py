@@ -192,8 +192,11 @@ class ftp( remote ):
     def _remote_path( self, f ):
         return os.path.join( self.url.path, os.path.dirname( f.name ) )
 
-    def _listdir( path ):
-        for path in self.con.nlst( self._full_path( path ) ):
+    def _listdir( self ):
+        for path in self.con.nlst( _decode_furl_path( self.url.path ) ):
+            if path in [ '.', '..' ]:
+                continue
+
             yield path
 
     def isdir( self, path ):
@@ -216,8 +219,6 @@ class ftp( remote ):
 
         try:
             for path in self.con.nlst( cur_path ):
-                if path in [ '.', '..' ]:
-                    continue
 
                 print path
 
