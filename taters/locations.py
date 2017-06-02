@@ -101,6 +101,12 @@ class local( location ):
 
     def put( self, f ):
         print 'local:%s' % f.name
+
+        # Ensure dest paths exist
+        dirpath = os.path.dirname( f.name )
+        if not self.exists( dirpath ):
+            self.mkdirs( dirpath )
+
         with open( self._full_path( f.name ), 'wb' ) as dest:
             read_all_to( f, dest.write )
 
@@ -122,11 +128,6 @@ class local( location ):
 
     def destination( self, files, overwrite = False ):
         for f in files:
-            # Ensure dest paths exist
-            dirpath = os.path.dirname( f.name )
-            if not self.exists( dirpath ):
-                self.mkdirs( dirpath )
-
             if f.delete:
                 self.rm( f )
             elif overwrite == True or not self.exists( f.name ) or self._overwrite( overwrite, f ):
