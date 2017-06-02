@@ -252,10 +252,8 @@ class ftp( remote ):
         if not self.con:
             self.connect()
 
-        cur_path = os.path.join( self.url.path, path )
-
         try:
-            self.con.size( cur_path )
+            self.con.size( self._full_path( path ) )
         except:
             return False
 
