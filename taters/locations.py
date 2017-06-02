@@ -329,6 +329,19 @@ class ssh( remote ):
         except IOError:
             self.mkdirs( self.url.path )
 
+    def _listdir( self ):
+        if not self.con:
+            self.connect()
+
+        for file_attrs in self.con.open_sftp().listdir_iter( _decode_furl_path( self.url.path ) ):
+            yield file_attr.filename
+
+    def isdir( self, path ):
+        if not self.con:
+            self.connect()
+
+        return stat.S_ISDIR( self.con.open_sftp().stat( self._full_path( path ) ) )
+
     def source( self, base_path = '', recursive = False ):
         if not self.con:
             self.connect()
