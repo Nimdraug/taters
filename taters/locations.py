@@ -217,29 +217,14 @@ class ftp( remote ):
 
         return True
 
-    def source( self, base_path = '', recursive = False ):
-        if not self.con:
-            self.connect()
-
-        cur_path = os.path.join( self.url.path, base_path )
-
-        try:
-            for path in self.con.nlst( cur_path ):
-
-                print path
-
-                abs_path = os.path.join( cur_path, path )
-                rel_path = os.path.join( base_path, path )
-
-                if self._is_dir( abs_path ):
-                    if not recursive:
-                        continue
-                    for f in self.source( rel_path, recursive ):
-                        yield f
-                else:
-                    yield self.get( abs_path )
-        except ftplib.error_perm:
-            raise
+    def source( self, recursive = False ):
+        for path in self._listdir():
+            if self.isdir( path ):
+                if recursive:
+                    for f in self.sub_location( path ).source( True ):
+                        yield f.rename( os.path.join( path, f.name ) )
+            else:
+                yield self.get( path )
 
     def _retry( self, func, *a, **kw ):
         for t in range( self.retries ):
