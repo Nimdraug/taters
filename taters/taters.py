@@ -125,9 +125,7 @@ class lazy_file( object ):
         return self.file.tell( *a, **kw )
 
     def rename( self, name ):
-        print '>', name
         self.name = name
-
         return self
 
 class pipe:
@@ -226,9 +224,7 @@ class pipe:
         self.delete = False
 
     def rename( self, name ):
-        print '>', name
         self.name = name
-
         return self
 
 def uppercase( f ):
