@@ -485,7 +485,7 @@ class git( local ):
 
                 continue
 
-            f = lazy_file( fname )
+            f = self.get( fname )
 
             if mode == 'D':
                 f.delete = True
