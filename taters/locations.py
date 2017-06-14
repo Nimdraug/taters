@@ -376,6 +376,11 @@ class ssh( remote ):
             return True
 
     def get( self, path ):
+        if not self.con:
+            self.connect()
+
+        full_path = self._full_path( path )
+
         print 'G', path
         p = pipe( path )
 
@@ -385,8 +390,7 @@ class ssh( remote ):
             sftp = self.con.open_sftp()
 
             try:
-                sftp.chdir( self.url.path )
-                sftp.getfo( path, p.w, callback = self.report_progress )
+                sftp.getfo( full_path, p.w, callback = self.report_progress )
             except Exception as e:
                 p.w.write( e )
 
@@ -397,18 +401,21 @@ class ssh( remote ):
         return p.r
 
     def put( self, f ):
+        if not self.con:
+            self.connect()
+
         print 'P', f.name
 
         sftp = self.con.open_sftp()
-        sftp.chdir( self.url.path )
 
-        try:
-            sftp.putfo( f, f.name, callback = self.report_progress )
-        except IOError:
-            # Most likely that dir does not exist, create and retry
-            # TODO: Causes infinite recursion on permission denied
-            self.mkdirs( os.path.dirname( f.name ) )
-            self.put( f )
+        dir_path = os.path.dirname( f.name )
+
+        if not self.exists( dir_path ):
+            self.mkdirs( dir_path )
+
+        full_path = self._full_path( f.name )
+
+        sftp.putfo( f, full_path, callback = self.report_progress )
 
     def report_progress( self, prog, of ):
         print '%s of %s\r' % ( prog, of ),
