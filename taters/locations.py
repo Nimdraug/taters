@@ -342,22 +342,6 @@ class ssh( remote ):
 
         return stat.S_ISDIR( self.con.open_sftp().stat( self._full_path( path ) ) )
 
-    def source( self, base_path = '', recursive = False ):
-        if not self.con:
-            self.connect()
-
-        cur_path = os.path.join( self.url.path, base_path )
-
-        for file_attr in self.con.listdir_attr( cur_path ):
-            rel_path = os.path.join( base_path, file_attr.filename )
-            full_path = os.path.join( cur_path, file_attr.filename )
-
-            if stat.S_ISDIR( file_attr.st_mode ) and recursive:
-                for f in self.source( rel_path, recursive ):
-                    yield f
-            else:
-                yield self.get( full_path ).rename( rel_path )
-
     def exists( self, path ):
         if not self.con:
             self.connect()
