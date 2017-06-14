@@ -468,24 +468,24 @@ class git( local ):
 
     def source( self, from_commit = None, to_commit = None, recursive = False ):
         for mode, fname in self._listdir():
-            if mode != 'D' and recursive and os.path.isdir( os.path.join( self.url.path, base_path, fname ) ):
+            if mode != 'D' and recursive and self.isdir( fname ):
                 # Encountered a submodule in recursive mode
                 # Work out its from and to commits and yield the changed files
 
-                if not os.path.exists( os.path.join( self.url.path, base_path, fname, '.git' ) ):
-                    raise Exception, 'Submodule %s not checked out!' % os.path.join( base_path, fname )
+                if not self.exists( os.path.join( fname, '.git' ) ):
+                    raise Exception, 'Submodule %s not checked out!' % fname
 
                 sub_from = self.git( 'ls-tree', from_commit, fname ) if from_commit else None
                 sub_from = sub_from.split()[2] if sub_from else None
 
                 sub_to = self.git( 'ls-tree', to_commit, fname ).split()[2] if to_commit else None
 
-                for f in self.source( sub_from, sub_to, os.path.join( base_path, fname ), recursive ):
-                    yield f
+                for f in self.sub_location( fname ).source( sub_from, sub_to, recursive ):
+                    yield f.rename( os.path.join( fname, f.name ) )
 
                 continue
 
-            f = lazy_file( os.path.join( self.url.path, base_path, fname ) )
+            f = lazy_file( fname )
 
             if mode == 'D':
                 f.delete = True
