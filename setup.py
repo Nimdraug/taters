@@ -40,6 +40,7 @@ setup(
     packages = [ 'taters' ],
 
     install_requires = [
+        'furl',
         'paramiko',
         'sh'
     ]
