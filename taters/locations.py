@@ -297,9 +297,11 @@ class ssh( remote ):
         if not self.con:
             self.connect()
 
+        sftp = self.con.open_sftp()
+
         cur_path = os.path.join( self.url.path, base_path )
 
-        for file_attr in self.con.listdir_attr( cur_path ):
+        for file_attr in sftp.listdir_attr( cur_path ):
             rel_path = os.path.join( base_path, file_attr.filename )
             full_path = os.path.join( cur_path, file_attr.filename )
 
