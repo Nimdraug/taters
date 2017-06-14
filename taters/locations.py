@@ -452,25 +452,22 @@ class git( local ):
     def get_ref_commit( self, ref = 'HEAD' ):
         return str( self.git( 'rev-parse', ref ) ).strip()
 
-    def source( self, from_commit = None, to_commit = None, recursive = False ):
+    def _listdir( self, from_commit = None, to_commit = None ):
         if from_commit is None:
-            def get_all_files():
-                for f in self.git( "ls-tree", "--name-only", '-r', to_commit or 'HEAD', _iter = True, _tty_out = False ):
-                    yield 'A', f.strip()
-
-            files = get_all_files()
+            # List all files
+            for f in self.git( "ls-tree", "--name-only", '-r', to_commit or 'HEAD', _iter = True, _tty_out = False ):
+                yield 'A', f.strip()
         else:
-            def get_changed_files():
-                args = [ '--name-status', '--no-renames', '--color=never', from_commit ]
-                if to_commit:
-                    args.append( to_commit )
+            # List only changed files
+            args = [ '--name-status', '--no-renames', '--color=never', from_commit ]
+            if to_commit:
+                args.append( to_commit )
 
-                for f in self.git.diff( *args, _iter = True, _tty_out = False ):
-                    yield f.strip().split( '\t' )
+            for f in self.git.diff( *args, _iter = True, _tty_out = False ):
+                yield f.strip().split( '\t' )
 
-            files = get_changed_files()
-
-        for mode, fname in files:
+    def source( self, from_commit = None, to_commit = None, recursive = False ):
+        for mode, fname in self._listdir():
             if mode != 'D' and recursive and os.path.isdir( os.path.join( self.url.path, base_path, fname ) ):
                 # Encountered a submodule in recursive mode
                 # Work out its from and to commits and yield the changed files
