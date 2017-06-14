@@ -320,7 +320,7 @@ class ssh( remote ):
         if self.url.password:
             args['password'] = self.url.password
 
-        self.con.connect( self.url.hostname, **args )
+        self.con.connect( self.url.host, **args )
 
         # Ensure base dir exists
         sftp = self.con.open_sftp()
