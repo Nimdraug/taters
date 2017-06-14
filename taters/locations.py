@@ -444,23 +444,18 @@ class git( local ):
     def __init__( self, url = '' ):
         super( git, self ).__init__( url )
 
-    def git( self, base_path = '' ):
-        path = os.path.join( self.url.path, base_path )
-
-        if path:
-            return sh.git.bake( '-C', path )
+        if self.url.path:
+            self.git = sh.git.bake( '-C', _decode_furl_path( self.url.path ) )
         else:
-            return sh.git
+            self.git = sh.git
 
-    def get_ref_commit( self, ref = 'HEAD', base_path = '' ):
-        return str( self.git( base_path )( 'rev-parse', ref ) ).strip()
+    def get_ref_commit( self, ref = 'HEAD' ):
+        return str( self.git( 'rev-parse', ref ) ).strip()
 
-    def source( self, from_commit = None, to_commit = None, base_path = '', recursive = False ):
-        git = self.git( base_path )
-
+    def source( self, from_commit = None, to_commit = None, recursive = False ):
         if from_commit is None:
             def get_all_files():
-                for f in git( "ls-tree", "--name-only", '-r', to_commit or 'HEAD', _iter = True, _tty_out = False ):
+                for f in self.git( "ls-tree", "--name-only", '-r', to_commit or 'HEAD', _iter = True, _tty_out = False ):
                     yield 'A', f.strip()
 
             files = get_all_files()
@@ -470,7 +465,7 @@ class git( local ):
                 if to_commit:
                     args.append( to_commit )
 
-                for f in git.diff( *args, _iter = True, _tty_out = False ):
+                for f in self.git.diff( *args, _iter = True, _tty_out = False ):
                     yield f.strip().split( '\t' )
 
             files = get_changed_files()
@@ -483,10 +478,10 @@ class git( local ):
                 if not os.path.exists( os.path.join( self.url.path, base_path, fname, '.git' ) ):
                     raise Exception, 'Submodule %s not checked out!' % os.path.join( base_path, fname )
 
-                sub_from = git( 'ls-tree', from_commit, fname ) if from_commit else None
+                sub_from = self.git( 'ls-tree', from_commit, fname ) if from_commit else None
                 sub_from = sub_from.split()[2] if sub_from else None
 
-                sub_to = git( 'ls-tree', to_commit, fname ).split()[2] if to_commit else None
+                sub_to = self.git( 'ls-tree', to_commit, fname ).split()[2] if to_commit else None
 
                 for f in self.source( sub_from, sub_to, os.path.join( base_path, fname ), recursive ):
                     yield f
