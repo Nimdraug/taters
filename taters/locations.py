@@ -467,7 +467,7 @@ class git( local ):
                 yield f.strip().split( '\t' )
 
     def source( self, from_commit = None, to_commit = None, recursive = False ):
-        for mode, fname in self._listdir():
+        for mode, fname in self._listdir( from_commit, to_commit ):
             if mode != 'D' and recursive and self.isdir( fname ):
                 # Encountered a submodule in recursive mode
                 # Work out its from and to commits and yield the changed files
