@@ -423,18 +423,21 @@ class ssh( remote ):
             pass
 
     def mkdirs( self, path ):
+        if not self.con:
+            self.connect()
+
         sftp = self.con.open_sftp()
 
-        if path.startswith( '/' ):
+        full_path = self._full_path( path )
+
+        if full_path.startswith( '/' ):
             sftp.chdir( '/' )
-            path = path[1:]
-        else:
-            sftp.chdir( self.url.path )
+            full_path = full_path[1:]
 
         cur_path = ''
         last_existed = True
 
-        for p in path.split( os.sep ):
+        for p in full_path.split( os.sep ):
             cur_path = os.path.join( cur_path, p )
             
             if last_existed:
@@ -444,6 +447,7 @@ class ssh( remote ):
                 except IOError:
                     pass
             
+            last_existed = False
             print '+D', cur_path
             sftp.mkdir( cur_path )
 
