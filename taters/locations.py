@@ -364,9 +364,10 @@ class ssh( remote ):
 
         sftp = self.con.open_sftp()
 
+        full_path = self._full_path( path )
+
         try:
-            sftp.chdir( self.url.path )
-            sftp.stat( path )
+            sftp.stat( full_path )
         except IOError, e:
             if e.errno == errno.ENOENT:
                 return False
