@@ -423,9 +423,9 @@ class ssh( remote ):
     def rm( self, f ):
         print 'R', f.name
         sftp = self.con.open_sftp()
-        sftp.chdir( self.url.path )
+
         try:
-            sftp.remove( f.name )
+            sftp.remove( self._full_path( f.name ) )
         except IOError:
             # Most likely file does not exist, no need to remove it then
             pass
