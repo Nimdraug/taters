@@ -327,13 +327,13 @@ class ssh( remote ):
             self.connect()
 
         for file_attrs in self.con.open_sftp().listdir_iter( _decode_furl_path( self.url.path ) ):
-            yield file_attr.filename
+            yield file_attrs.filename
 
     def isdir( self, path ):
         if not self.con:
             self.connect()
 
-        return stat.S_ISDIR( self.con.open_sftp().stat( self._full_path( path ) ) )
+        return stat.S_ISDIR( self.con.open_sftp().stat( self._full_path( path ) ).st_mode )
 
     def exists( self, path ):
         if not self.con:
