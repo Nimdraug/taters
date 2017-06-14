@@ -322,13 +322,6 @@ class ssh( remote ):
 
         self.con.connect( self.url.host, **args )
 
-        # Ensure base dir exists
-        sftp = self.con.open_sftp()
-        try:
-            sftp.chdir( self.url.path )
-        except IOError:
-            self.mkdirs( self.url.path )
-
     def _listdir( self ):
         if not self.con:
             self.connect()
