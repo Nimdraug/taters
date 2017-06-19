@@ -227,6 +227,9 @@ class ftp( remote ):
         return True
 
     def get( self, path ):
+        if not self.con:
+            self.connect()
+
         print 'G', path
         p = pipe( path )
         full_path = self._full_path( path )
@@ -246,6 +249,9 @@ class ftp( remote ):
         return p.r
 
     def put( self, f ):
+        if not self.con:
+            self.connect()
+
         print 'P', f.name
 
         dir_path = os.path.dirname( self._full_path( f.name ) )
