@@ -157,9 +157,10 @@ class ftp( remote ):
 
     Represents a location on an FTP server'''
 
-    def __init__( self, url, bad_passive_server = False, timeout = socket._GLOBAL_DEFAULT_TIMEOUT, retries = 3 ):
+    def __init__( self, url, passive = True, bad_passive_server = False, timeout = socket._GLOBAL_DEFAULT_TIMEOUT, retries = 3 ):
         super( ftp, self ).__init__( url )
         self.bad_passive_server = bad_passive_server
+        self.passive = passive
         self.timeout = timeout
         self.retries = retries
 
@@ -172,6 +173,7 @@ class ftp( remote ):
 
         self.con.connect( self.url.host, self.url.port )
         self.con.login( urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
+        self.con.set_pasv( self.passive )
 
     def _remote_path( self, f ):
         return os.path.join( self.url.path, os.path.dirname( f.name ) )
