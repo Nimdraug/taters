@@ -406,6 +406,9 @@ class ssh( remote ):
         print '%s of %s\r' % ( prog, of ),
 
     def rm( self, f ):
+        if not self.con:
+            self.connect()
+
         print 'R', f.name
         sftp = self.con.open_sftp()
 
