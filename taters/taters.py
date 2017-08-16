@@ -259,6 +259,24 @@ def lessc( f, *a, **kw ):
 
     return p.r
 
+def sass( f, *a, **kw ):
+    '''sass/scss Builder
+
+    Takes a sass/scss file and runs it through the sass compiler and returns the resulting css file.
+    Any arguments passed to the function will be passed straight to the sh command.
+    Note: to compile scss code you will need to pass the --scss flag'''
+
+    print 'B', f.name
+    p = pipe( f.name )
+
+    def run():
+        sh.sass( '--stdin', *a, _in = f, _out = p.w, **kw )
+        p.w.close()
+
+    threading.Thread( target = run ).start()
+
+    return p.r
+
 def uglifyjs( file_paths, *a, **kw ):
     '''JavaScript Builder
 
