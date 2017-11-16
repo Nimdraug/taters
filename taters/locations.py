@@ -472,7 +472,12 @@ class git( local ):
     def _listdir( self, from_commit = None, to_commit = None ):
         if from_commit is None:
             # List all files
-            for f in self.git( "ls-tree", "--name-only", '-r', to_commit or 'HEAD', _iter = True, _tty_out = False ):
+            args = [ "ls-tree", "--name-only", '-r', to_commit or 'HEAD' ]
+            kwargs = {
+                '_iter': True,
+                '_tty_out': False
+            }
+            for f in self.git( *args, **kwargs ) if not IS_PBS else self.git( *args ).split():
                 yield 'A', f.strip()
         else:
             # List only changed files
@@ -480,7 +485,7 @@ class git( local ):
             if to_commit:
                 args.append( to_commit )
 
-            for f in self.git.diff( *args, _iter = True, _tty_out = False ):
+            for f in self.git.diff( *args, _iter = True, _tty_out = False ) if not IS_PBS else self.diff( *args ).split():
                 yield f.strip().split( '\t' )
 
     def source( self, from_commit = None, to_commit = None, recursive = False ):
