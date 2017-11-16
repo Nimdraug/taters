@@ -6,10 +6,14 @@ import os
 import paramiko
 import tarfile
 import urllib
-import sh
 import socket
 import stat
 import threading
+
+try:
+    import sh
+except:
+    import pbs as sh
 
 def _decode_furl_path( path ):
     '''decodes furl.Path to unicode string'''

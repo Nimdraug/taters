@@ -1,8 +1,12 @@
 import os.path
 import StringIO
-import sh
 import sys
 import threading
+
+try:
+    import sh
+except:
+    import pbs as sh
 
 def null_dest( files ):
     '''Null destination
