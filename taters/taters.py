@@ -5,8 +5,10 @@ import threading
 
 try:
     import sh
+    IS_PBS = False
 except:
     import pbs as sh
+    IS_PBS = True
 
 def null_dest( files ):
     '''Null destination

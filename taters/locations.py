@@ -12,8 +12,10 @@ import threading
 
 try:
     import sh
+    IS_PBS = False
 except:
     import pbs as sh
+    IS_PBS = True
 
 def _decode_furl_path( path ):
     '''decodes furl.Path to unicode string'''
