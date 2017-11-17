@@ -273,12 +273,9 @@ def _compile_args( args, kwargs ):
             if v is True: processed_args.append("--"+k)
             else: processed_args.append('--%s=%s' % (k, v))
 
-    print processed_args
-
     return processed_args
 
 def _pipe_cmd( inf, outf, *cmd ):
-    print cmd
     proc = subprocess.Popen( cmd, stdin = subprocess.PIPE, stdout = subprocess.PIPE )
 
     if inf:
