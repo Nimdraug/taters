@@ -281,8 +281,9 @@ def _pipe_cmd( inf, outf, *cmd ):
     print cmd
     proc = subprocess.Popen( cmd, stdin = subprocess.PIPE, stdout = subprocess.PIPE )
 
-    proc.stdin.write( read_all( inf ) )
-    proc.stdin.close()
+    if inf:
+        proc.stdin.write( read_all( inf ) )
+        proc.stdin.close()
     outf.write( proc.stdout.read() )
     outf.close()
 
