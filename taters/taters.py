@@ -297,8 +297,7 @@ def lessc( f, *a, **kw ):
     p = pipe( f.name )
 
     def run():
-        sh.lessc( '-', *a, _in = f, _out = p.w, **kw )
-        p.w.close()
+        _pipe_cmd( f, p.w, sh.which( 'lessc' ), '-', *_compile_args( a, kw ) )
 
     threading.Thread( target = run ).start()
 
@@ -315,8 +314,7 @@ def sass( f, *a, **kw ):
     p = pipe( f.name )
 
     def run():
-        sh.sass( '--stdin', *a, _in = f, _out = p.w, **kw )
-        p.w.close()
+        _pipe_cmd( f, p.w, sh.which( 'sass' ), '--stdin', *_compile_args( a, kw ) )
 
     threading.Thread( target = run ).start()
 
@@ -332,8 +330,7 @@ def uglifyjs( file_paths, *a, **kw ):
     p = pipe( '' )
 
     def run():
-        sh.uglifyjs( file_paths, *a, _out = p.w, **kw )
-        p.w.close()
+        _pipe_cmd( None, p.w, sh.which( 'uglifyjs' ), *_compile_args( [ file_paths, a ], kw ) )
 
     threading.Thread( target = run ).start()
 
