@@ -271,7 +271,7 @@ def _compile_args( args, kwargs ):
             k = k.replace("_", "-")
 
             if v is True: processed_args.append("--"+k)
-            else: processed_args.append('--%s=%s' % (k, v))
+            else: processed_args.append('--%s="%s"' % (k, v))
 
     return processed_args
 
@@ -279,7 +279,8 @@ def _pipe_cmd( inf, outf, *cmd ):
     proc = subprocess.Popen( cmd, stdin = subprocess.PIPE, stdout = subprocess.PIPE )
 
     if inf:
-        proc.stdin.write( read_all( inf ) )
+        data = read_all( inf )
+        proc.stdin.write( data )
         proc.stdin.close()
     outf.write( proc.stdout.read() )
     outf.close()
@@ -294,7 +295,7 @@ def lessc( f, *a, **kw ):
     p = pipe( f.name )
 
     def run():
-        _pipe_cmd( f, p.w, sh.which( 'lessc' ), '-', *_compile_args( a, kw ) )
+        _pipe_cmd( f, p.w, sh.which( 'lessc.cmd' ), '-', *_compile_args( a, kw ) )
 
     threading.Thread( target = run ).start()
 
@@ -311,7 +312,7 @@ def sass( f, *a, **kw ):
     p = pipe( f.name )
 
     def run():
-        _pipe_cmd( f, p.w, sh.which( 'sass' ), '--stdin', *_compile_args( a, kw ) )
+        _pipe_cmd( f, p.w, sh.which( 'sass.cmd' ), '--stdin', *_compile_args( a, kw ) )
 
     threading.Thread( target = run ).start()
 
@@ -327,7 +328,7 @@ def uglifyjs( file_paths, *a, **kw ):
     p = pipe( '' )
 
     def run():
-        _pipe_cmd( None, p.w, sh.which( 'uglifyjs' ), *_compile_args( [ file_paths, a ], kw ) )
+        _pipe_cmd( None, p.w, sh.which( 'uglifyjs.cmd' ), *_compile_args( [ file_paths, a ], kw ) )
 
     threading.Thread( target = run ).start()
 

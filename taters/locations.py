@@ -485,7 +485,7 @@ class git( local ):
             if to_commit:
                 args.append( to_commit )
 
-            for f in self.git.diff( *args, _iter = True, _tty_out = False ) if not IS_PBS else self.diff( *args ).split():
+            for f in self.git.diff( *args, _iter = True, _tty_out = False ) if not IS_PBS else self.git.diff( *args ).strip().split('\n'):
                 yield f.strip().split( '\t' )
 
     def source( self, from_commit = None, to_commit = None, recursive = False ):
