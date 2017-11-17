@@ -248,6 +248,34 @@ def uppercase( f ):
 
     return p.r
 
+def _compile_args( args, kwargs ):
+    processed_args = []
+
+    # aggregate positional args
+    for arg in args:
+        if isinstance(arg, (list, tuple)):
+            for sub_arg in arg: processed_args.append(sub_arg)
+        else: processed_args.append(arg)
+
+    # aggregate the keyword arguments
+    for k,v in kwargs.items():
+        # we're passing a short arg as a kwarg, example:
+        # cut(d="\t")
+        if len(k) == 1:
+            processed_args.append("-"+k)
+            if v is not True: processed_args.append(v)
+
+        # we're doing a long arg
+        else:
+            k = k.replace("_", "-")
+
+            if v is True: processed_args.append("--"+k)
+            else: processed_args.append('--%s=%s' % (k, v))
+
+    print processed_args
+
+    return processed_args
+
 def lessc( f, *a, **kw ):
     '''less Builder
 
