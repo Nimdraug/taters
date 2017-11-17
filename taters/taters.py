@@ -2,6 +2,7 @@ import os.path
 import StringIO
 import sys
 import threading
+import subprocess
 
 try:
     import sh
@@ -275,6 +276,15 @@ def _compile_args( args, kwargs ):
     print processed_args
 
     return processed_args
+
+def _pipe_cmd( inf, outf, *cmd ):
+    print cmd
+    proc = subprocess.Popen( cmd, stdin = subprocess.PIPE, stdout = subprocess.PIPE )
+
+    proc.stdin.write( read_all( inf ) )
+    proc.stdin.close()
+    outf.write( proc.stdout.read() )
+    outf.close()
 
 def lessc( f, *a, **kw ):
     '''less Builder
