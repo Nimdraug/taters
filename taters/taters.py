@@ -98,6 +98,11 @@ class lazy_file( object ):
         self.file = open( self._name, *self.a, **self.kw )
         self.size = os.stat( self._name ).st_size
 
+    def close( self ):
+        self.file.close()
+        self.file = None
+        self.size = 0
+
     def read( self, *a, **kw ):
         if not self.file:
             self.open()
