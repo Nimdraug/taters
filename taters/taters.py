@@ -94,8 +94,8 @@ class lazy_file( object ):
         self.buffering = buffering
         self.delete = False
 
-    def open( self ):
-        self.file = open( self._name, *self.a, **self.kw )
+    def open( self, mode = None ):
+        self.file = open( self._name, mode or self.mode, self.buffering )
         self.size = os.stat( self._name ).st_size
 
     def close( self ):
