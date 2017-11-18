@@ -105,13 +105,13 @@ class lazy_file( object ):
 
     def read( self, *a, **kw ):
         if not self.file:
-            self.open()
+            self.open( 'rb' )
 
         return self.file.read( *a, **kw )
 
     def write( self, data, *a, **kw ):
         if not self.file:
-            self.open()
+            self.open( 'wb' )
 
         self.size += len( data )
 
