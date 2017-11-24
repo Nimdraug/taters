@@ -269,6 +269,9 @@ class ftp( remote ):
         self._retry( self.con.storbinary, 'STOR %s' % os.path.basename( f.name ), f )
 
     def rm( self, f ):
+        if not self.con:
+            self.connect()
+
         print 'R', f.name
 
         dir_path = os.path.dirname( self._full_path( f.name ) )
