@@ -85,17 +85,18 @@ class lazy_file( object ):
 
     A file-like object which only gets opened when it is required (at read or write for instance).'''
 
-    def __init__( self, name, mode, buffering ):
+    def __init__( self, name, mode, *a, **kw ):
         self.name = name
         self._name = name
         self.file = None
         self.size = 0
         self.mode = mode
-        self.buffering = buffering
+        self.a = a
+        self.kw = kw
         self.delete = False
 
     def open( self, mode = None ):
-        self.file = open( self._name, mode or self.mode, self.buffering )
+        self.file = open( self._name, mode or self.mode, *self.a, **self.kw )
         self.size = os.stat( self._name ).st_size
 
     def close( self ):
