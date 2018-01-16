@@ -11,6 +11,9 @@ import socket
 import stat
 import threading
 
+def _parse_url( url ):
+    return furl.furl( url )
+
 def _decode_furl_path( path ):
     '''decodes furl.Path to unicode string'''
     return urllib.unquote( str( path ) ).decode( 'utf8' )
@@ -20,7 +23,7 @@ class location( object ):
 
     def __init__( self, url ):
         if isinstance( url, basestring ):
-            url = furl.furl( url )
+            url = _parse_url( url )
         self.url = url
 
     def sub_location( self, path ):
