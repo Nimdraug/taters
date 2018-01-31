@@ -139,7 +139,7 @@ class remote( location ):
         self._con = None
 
     @property
-    def con( self )
+    def con( self ):
         if not self._con:
             self.connect()
 
@@ -177,21 +177,18 @@ class ftp( remote ):
     def connect( self ):
         print 'C', self.url.url
         if self.bad_passive_server:
-            self.con = ftplib.FTP( timeout = self.timeout )
+            self._con = ftplib.FTP( timeout = self.timeout )
         else:
-            self.con = BadPassiveFTP( timeout = self.timeout )
+            self._con = BadPassiveFTP( timeout = self.timeout )
 
-        self.con.connect( self.url.host, self.url.port )
-        self.con.login( urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
-        self.con.set_pasv( self.passive )
+        self._con.connect( self.url.host, self.url.port )
+        self._con.login( urllib.unquote( self.url.username ), urllib.unquote( self.url.password ) )
+        self._con.set_pasv( self.passive )
 
     def _remote_path( self, f ):
         return os.path.join( self.url.path, os.path.dirname( f.name ) )
 
     def _listdir( self ):
-        if not self.con:
-            self.connect()
-
         for path in self.con.nlst( _decode_furl_path( self.url.path ) ):
             if path in [ '.', '..' ]:
                 continue
@@ -199,9 +196,6 @@ class ftp( remote ):
             yield path
 
     def isdir( self, path ):
-        if not self.con:
-            self.connect()
-
         full_path = self._full_path( path )
 
         try:
@@ -228,9 +222,6 @@ class ftp( remote ):
                 break
 
     def exists( self, path ):
-        if not self.con:
-            self.connect()
-
         try:
             self.con.size( self._full_path( path ) )
         except:
@@ -239,9 +230,6 @@ class ftp( remote ):
         return True
 
     def get( self, path ):
-        if not self.con:
-            self.connect()
-
         print 'G', path
         p = pipe( path )
         full_path = self._full_path( path )
@@ -261,9 +249,6 @@ class ftp( remote ):
         return p.r
 
     def put( self, f ):
-        if not self.con:
-            self.connect()
-
         print 'P', f.name
 
         dir_path = os.path.dirname( self._full_path( f.name ) )
@@ -279,9 +264,6 @@ class ftp( remote ):
         self._retry( self.con.storbinary, 'STOR %s' % os.path.basename( f.name ), f )
 
     def rm( self, f ):
-        if not self.con:
-            self.connect()
-
         print 'R', f.name
 
         dir_path = os.path.dirname( self._full_path( f.name ) )
@@ -302,9 +284,6 @@ class ftp( remote ):
             print e
 
     def mkdirs( self, path ):
-        if not self.con:
-            self.connect()
-
         full_path = self._full_path( path )
 
         if full_path.startswith( '/' ):
@@ -330,8 +309,8 @@ class ssh( remote ):
 
     def connect( self ):
         print 'C', self.url.url
-        self.con = paramiko.SSHClient()
-        self.con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
+        self._con = paramiko.SSHClient()
+        self._con.set_missing_host_key_policy( paramiko.AutoAddPolicy() )
 
         args = {}
         if self.url.port:
@@ -341,25 +320,16 @@ class ssh( remote ):
         if self.url.password:
             args['password'] = self.url.password
 
-        self.con.connect( self.url.host, **args )
+        self._con.connect( self.url.host, **args )
 
     def _listdir( self ):
-        if not self.con:
-            self.connect()
-
         for file_attrs in self.con.open_sftp().listdir_iter( _decode_furl_path( self.url.path ) ):
             yield file_attrs.filename
 
     def isdir( self, path ):
-        if not self.con:
-            self.connect()
-
         return stat.S_ISDIR( self.con.open_sftp().stat( self._full_path( path ) ).st_mode )
 
     def exists( self, path ):
-        if not self.con:
-            self.connect()
-
         sftp = self.con.open_sftp()
 
         full_path = self._full_path( path )
@@ -374,9 +344,6 @@ class ssh( remote ):
             return True
 
     def get( self, path ):
-        if not self.con:
-            self.connect()
-
         full_path = self._full_path( path )
 
         print 'G', path
@@ -399,9 +366,6 @@ class ssh( remote ):
         return p.r
 
     def put( self, f ):
-        if not self.con:
-            self.connect()
-
         print 'P', f.name
 
         sftp = self.con.open_sftp()
@@ -419,9 +383,6 @@ class ssh( remote ):
         print '%s of %s\r' % ( prog, of ),
 
     def rm( self, f ):
-        if not self.con:
-            self.connect()
-
         print 'R', f.name
         sftp = self.con.open_sftp()
 
@@ -432,9 +393,6 @@ class ssh( remote ):
             pass
 
     def mkdirs( self, path ):
-        if not self.con:
-            self.connect()
-
         sftp = self.con.open_sftp()
 
         full_path = self._full_path( path )
