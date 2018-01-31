@@ -332,19 +332,17 @@ class ssh( remote ):
         self._con.connect( self.url.host, **args )
 
     def _listdir( self ):
-        for file_attrs in self.con.open_sftp().listdir_iter( _decode_furl_path( self.url.path ) ):
+        for file_attrs in self._sftp_con.listdir_iter( _decode_furl_path( self.url.path ) ):
             yield file_attrs.filename
 
     def isdir( self, path ):
-        return stat.S_ISDIR( self.con.open_sftp().stat( self._full_path( path ) ).st_mode )
+        return stat.S_ISDIR( self._sftp_con.stat( self._full_path( path ) ).st_mode )
 
     def exists( self, path ):
-        sftp = self.con.open_sftp()
-
         full_path = self._full_path( path )
 
         try:
-            sftp.stat( full_path )
+            self._sftp_con.stat( full_path )
         except IOError, e:
             if e.errno == errno.ENOENT:
                 return False
