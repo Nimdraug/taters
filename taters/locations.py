@@ -136,11 +136,18 @@ class remote( location ):
     def __init__( self, url ):
         super( remote, self ).__init__( url )
 
-        self.con = None
+        self._con = None
+
+    @property
+    def con( self )
+        if not self._con:
+            self.connect()
+
+        return self._con
 
     def sub_location( self, path ):
         loc = super( remote, self ).sub_location( path )
-        loc.con = self.con
+        loc._con = self._con
 
         return loc
 
