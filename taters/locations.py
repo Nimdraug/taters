@@ -307,6 +307,15 @@ class ssh( remote ):
 
     Represents a location on an SSH server'''
 
+    __sftp_con = None
+
+    @property
+    def _sftp_con( self ):
+        if not self.__sftp_con:
+            self.__sftp_con = self.con.open_sftp()
+
+        return self.__sftp_con
+
     def connect( self ):
         print 'C', self.url.url
         self._con = paramiko.SSHClient()
