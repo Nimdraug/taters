@@ -241,7 +241,7 @@ def uppercase( f ):
     p = pipe( f.name )
 
     def run():
-        read_all( f, lambda chunk: p.w.write( chunk.upper() ) )
+        read_all_to( f, lambda chunk: p.w.write( chunk.upper() ) )
         p.w.close()
 
     threading.Thread( target = run ).start()
