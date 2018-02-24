@@ -505,6 +505,13 @@ class git( local ):
 
             yield p.r
 
+class file_location( location ):
+    def __init__( self, f ):
+        self.f = f
+
+    def open( self ):
+        pass
+
 class tar( location ):
     '''Tar file Location
 
