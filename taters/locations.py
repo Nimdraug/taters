@@ -441,6 +441,12 @@ class git( local ):
     def get_ref_commit( self, ref = 'HEAD' ):
         return str( self.git( 'rev-parse', ref ) ).strip()
 
+    def get_current_commit( self ):
+        try:
+            return str( sh.git.describe() ).strip()
+        except sh.ErrorReturnCode_128:
+            return self.get_ref_commit()
+
     def _listdir( self, from_commit = None, to_commit = None ):
         if from_commit is None:
             # List all files
