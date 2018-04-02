@@ -461,7 +461,7 @@ class git( local ):
             for f in self.git.diff( *args, _iter = True, _tty_out = False ):
                 yield f.strip().split( '\t' )
 
-    def source( self, from_commit = None, to_commit = None, recursive = False ):
+    def source( self, from_commit = None, to_commit = None, recursive = False, include_version = False ):
         for mode, fname in self._listdir( from_commit, to_commit ):
             if mode != 'D' and recursive and self.isdir( fname ):
                 # Encountered a submodule in recursive mode
@@ -486,6 +486,17 @@ class git( local ):
                 f.delete = True
 
             yield f
+        if include_version:
+            p = pipe( '.version' )
+
+            if to_commit:
+                p.w.write( to_commit )
+            else:
+                p.w.write( self.get_current_commit() )
+
+            p.w.close()
+
+            yield p.r
 
 class tar( location ):
     '''Tar file Location
