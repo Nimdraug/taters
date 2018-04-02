@@ -443,7 +443,7 @@ class git( local ):
 
     def get_current_commit( self ):
         try:
-            return str( sh.git.describe() ).strip()
+            return str( self.git.describe() ).strip()
         except sh.ErrorReturnCode_128:
             return self.get_ref_commit()
 
