@@ -457,7 +457,7 @@ class git( local ):
         if from_commit is None:
             # List all files
             for f in self.git( "ls-tree", "--name-only", '-r', to_commit or 'HEAD', _iter = True, _tty_out = False ):
-                yield 'A', f.strip()
+                yield 'A', self._maybe_decode_unusual( f.strip() )
         else:
             # List only changed files
             args = [ '--name-status', '--no-renames', '--color=never', from_commit ]
@@ -465,7 +465,8 @@ class git( local ):
                 args.append( to_commit )
 
             for f in self.git.diff( *args, _iter = True, _tty_out = False ):
-                yield f.strip().split( '\t' )
+                action, f = f.strip().split( '\t' )
+                yield action, self._maybe_decode_unusual( f )
 
     def source( self, from_commit = None, to_commit = None, recursive = False, include_version = False ):
         for mode, fname in self._listdir( from_commit, to_commit ):
