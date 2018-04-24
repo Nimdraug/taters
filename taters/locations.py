@@ -447,6 +447,12 @@ class git( local ):
         except sh.ErrorReturnCode_128:
             return self.get_ref_commit()
 
+    def _maybe_decode_unusual( self, name ):
+        if name.startswith( '"' ):
+            # Path is escaped due to "unusual" characters, unescape it (see git-config's man page under core.quotePath)
+            return name[1:-1].decode('string-escape')
+        return name
+
     def _listdir( self, from_commit = None, to_commit = None ):
         if from_commit is None:
             # List all files
