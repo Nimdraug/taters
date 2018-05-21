@@ -1,4 +1,4 @@
-from taters import lazy_file, pipe, read_all_to
+from taters import lazy_file, pipe, read_all, read_all_to, tee
 import errno
 import ftplib
 import furl
@@ -535,10 +535,17 @@ class tar( file_location ):
         self.open( 'w|gz' )
 
         for f in files:
-            f.read(0)
             tarinfo = tarfile.TarInfo( f.name )
-            tarinfo.size = f.size
-            self.tar.addfile( tarinfo, f )
+            if isinstance( f, pipe._reader ):
+                # It's a pipe, so tee it and read all it's data to get size
+                # Not ideal, and will break on files larger than pipe's chunk_max, but will work for now
+                f1, f2 = tee( f )
+                tarinfo.size = len( read_all( f1 ) )
+                self.tar.addfile( tarinfo, f2 )
+            else:
+                f.read(0)
+                tarinfo.size = f.size
+                self.tar.addfile( tarinfo, f )
 
 class zip( file_location ):
     '''Zip file Location
