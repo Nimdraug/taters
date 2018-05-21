@@ -512,7 +512,7 @@ class file_location( location ):
     def open( self ):
         pass
 
-class tar( location ):
+class tar( file_location ):
     '''Tar file Location
 
     Represents the files inside a tar archive as a location, allowing files to be extracted or zipped up.
@@ -522,22 +522,25 @@ class tar( location ):
     def __init__( self, f ):
         self.f = f
 
-    def source( self ):
-        tar = tarfile.open( fileobj = self.f, mode = 'r|*' )
+    def open( self, mode ):
+        self.tar = tarfile.open( fileobj = self.f, mode = mode )
 
-        for tarinfo in tar:
+    def source( self ):
+        self.open( 'r|*' )
+
+        for tarinfo in self.tar:
             yield tar.extractfile( tarinfo )
 
     def destination( self, files ):
-        tar = tarfile.open( fileobj = self.f, mode = 'w|gz' )
+        self.open( 'w|gz' )
 
         for f in files:
             f.read(0)
             tarinfo = tarfile.TarInfo( f.name )
             tarinfo.size = f.size
-            tar.addfile( tarinfo, f )
+            self.tar.addfile( tarinfo, f )
 
-class zip( location ):
+class zip( file_location ):
     '''Zip file Location
 
     Represents the files inside a zip archive as a location, allowing files to be extracted or zipped up.
