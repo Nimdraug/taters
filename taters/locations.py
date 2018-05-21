@@ -517,6 +517,8 @@ class tar( file_location ):
 
     Represents the files inside a tar archive as a location, allowing files to be extracted or zipped up.
 
+    NOTE: Beware of using this with large pipe-based files, anything larger than taters.pipe.chunk_max (8MiB by default) will most likely cause unknown issues.
+
     TODO: Fix me!'''
 
     def __init__( self, f ):
